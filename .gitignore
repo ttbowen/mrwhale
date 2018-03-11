@@ -62,3 +62,6 @@ typings/
 
 # compiled output
 dist
+
+# bot configurations
+config.json
