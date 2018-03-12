@@ -65,4 +65,5 @@ dist
 
 # bot configurations
 config.json
+db.json
 storage
