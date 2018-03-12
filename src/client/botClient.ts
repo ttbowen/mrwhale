@@ -1,7 +1,8 @@
-import { Client, ListenerUtil } from 'yamdbf';
+import { Client, ListenerUtil, Providers } from 'yamdbf';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
+const postgres = require('../../db.json');
 
 export class BotClient extends Client {
     constructor() {
@@ -10,7 +11,8 @@ export class BotClient extends Client {
             owner: config.discord_owner,
             ratelimit: '10/1m',
             statusText: 'In the Ocean.',
-            pause: true
+            pause: true,
+            provider: Providers.PostgresProvider(postgres.uri)
         });
     }
 
