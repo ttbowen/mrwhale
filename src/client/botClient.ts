@@ -16,7 +16,7 @@ export class BotClient extends Client {
 
     @once('pause')
     private async _onPause(): Promise<void> {
-        await this.setDefaultSetting('prefix', '!');
+        await this.setDefaultSetting('prefix', config.default_prefix);
         this.continue();
     }
 }
