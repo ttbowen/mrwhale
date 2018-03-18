@@ -31,7 +31,7 @@ export default class extends Command<BotClient> {
 
         if (!member.kickable) return message.channel.send('That user is not kickable.');
 
-        const kicking: Message = (await message.channel.send(`banning **${user.tag}**`)) as Message;
+        const kicking: Message = (await message.channel.send(`Kicking **${user.tag}**`)) as Message;
         try {
             member.kick(reason);
         } catch (err) {
