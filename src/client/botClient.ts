@@ -2,6 +2,7 @@ import { Client, ListenerUtil } from 'yamdbf';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
+const path = require('path');
 
 export class BotClient extends Client {
     constructor() {
@@ -10,6 +11,7 @@ export class BotClient extends Client {
             owner: config.discord_owner,
             ratelimit: '10/1m',
             statusText: 'In the Ocean.',
+            commandsDir: './dist/commands',
             pause: true
         });
     }
