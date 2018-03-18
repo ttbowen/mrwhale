@@ -26,7 +26,7 @@ export default class extends Command<BotClient> {
         }
 
         const unbanning: Message = (await message.channel.send(
-            `Bannning **${user.tag}**`
+            `unbanning **${user.tag}**`
         )) as Message;
         try {
             message.guild.unban(user.id);
