@@ -33,9 +33,7 @@ export default class extends Command<BotClient> {
             return message.channel.send('That user is already banned in this server.');
         }
 
-        const banning: Message = (await message.channel.send(
-            `Bannning **${user.tag}**`
-        )) as Message;
+        const banning: Message = (await message.channel.send(`Banning **${user.tag}**`)) as Message;
         try {
             message.guild.ban(user, { reason: reason, days: 7 });
         } catch (err) {
