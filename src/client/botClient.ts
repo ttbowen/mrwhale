@@ -1,10 +1,13 @@
-import { Client, ListenerUtil } from 'yamdbf';
+import { Client, ListenerUtil, LogLevel } from 'yamdbf';
+import { ModerationManager } from '../managers/moderationManager';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
 const path = require('path');
 
 export class BotClient extends Client {
+    moderation: ModerationManager;
+
     constructor() {
         super({
             token: config.discord_token,
@@ -14,6 +17,7 @@ export class BotClient extends Client {
             commandsDir: './dist/commands',
             pause: true
         });
+        this.moderation = new ModerationManager(this);
     }
 
     @once('pause')
