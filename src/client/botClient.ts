@@ -13,16 +13,21 @@ export class BotClient extends Client {
             token: config.discord_token,
             owner: config.discord_owner,
             ratelimit: '10/1m',
+            logLevel: LogLevel.ERROR,
             statusText: 'In the Ocean.',
             commandsDir: './dist/commands',
             pause: true
         });
-        this.moderation = new ModerationManager(this);
     }
 
     @once('pause')
     private async _onPause(): Promise<void> {
         await this.setDefaultSetting('prefix', config.default_prefix);
         this.continue();
+    }
+
+    @once('clientReady')
+    private async _onClientReady(): Promise<void> {
+        this.moderation = new ModerationManager(this);
     }
 }
