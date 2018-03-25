@@ -1,6 +1,7 @@
 import { Collection, GuildMember, User } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
+import { moderatorOnly } from '../../util/decorators/moderation';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -12,11 +13,11 @@ export default class extends Command<BotClient> {
             desc: 'Kick a user from the server.',
             usage: '<prefix>kick <user> <...reason>',
             group: 'mod',
-            guildOnly: true,
-            callerPermissions: ['KICK_MEMBERS']
+            guildOnly: true
         });
     }
 
+    @moderatorOnly
     @using(resolve('member: Member, ...reason: String'))
     @using(expect('member: Member, ...reason: String'))
     async action(message: Message, [member, reason]: [GuildMember, string]): Promise<any> {

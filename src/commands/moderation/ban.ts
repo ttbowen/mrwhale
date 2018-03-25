@@ -1,6 +1,7 @@
 import { Collection, User } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
+import { moderatorOnly } from '../../util/decorators/moderation';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -12,11 +13,11 @@ export default class extends Command<BotClient> {
             desc: 'Ban a user from the server.',
             usage: '<prefix>ban <user> <...reason>',
             group: 'mod',
-            guildOnly: true,
-            callerPermissions: ['BAN_MEMBERS']
+            guildOnly: true
         });
     }
 
+    @moderatorOnly
     @using(resolve('user: User, ...reason: String'))
     @using(expect('user: User, ...reason: String'))
     async action(message: Message, [user, reason]: [User, string]): Promise<any> {
