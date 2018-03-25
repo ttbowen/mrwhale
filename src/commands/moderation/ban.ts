@@ -1,4 +1,4 @@
-import { Collection, User } from 'discord.js';
+import { Collection, GuildMember, User } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
@@ -25,7 +25,17 @@ export default class extends Command<BotClient> {
             return message.channel.send('You cannot ban yourself.');
         }
 
-        if (user.id === message.guild.ownerID || user.bot) {
+        let member: GuildMember;
+        try {
+            member = await message.guild.fetchMember(user);
+        } catch {}
+
+        const modRole = await message.guild.storage.settings.get('modrole');
+        if (
+            (member && member.roles.has(modRole)) ||
+            user.id === message.guild.ownerID ||
+            user.bot
+        ) {
             return message.channel.send('You cannot use this command on this user.');
         }
 

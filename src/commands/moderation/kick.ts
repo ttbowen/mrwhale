@@ -26,7 +26,12 @@ export default class extends Command<BotClient> {
             return message.channel.send('You cannot kick yourself.');
         }
 
-        if (user.id === message.guild.ownerID || user.bot) {
+        const modRole = await message.guild.storage.settings.get('modrole');
+        if (
+            (member && member.roles.has(modRole)) ||
+            user.id === message.guild.ownerID ||
+            user.bot
+        ) {
             return message.channel.send('You cannot use this command on this user.');
         }
 
