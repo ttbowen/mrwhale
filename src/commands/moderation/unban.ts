@@ -1,5 +1,5 @@
 import { Collection, User } from 'discord.js';
-import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
+import { logger, Command, CommandDecorators, Logger, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
 
@@ -7,6 +7,8 @@ const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<BotClient> {
+    @logger private readonly _logger: Logger;
+
     constructor() {
         super({
             name: 'unban',
@@ -32,8 +34,10 @@ export default class extends Command<BotClient> {
         try {
             message.guild.unban(user.id);
         } catch (err) {
+            this._logger.error(`Error unbanning ${user.tag} from ${message.guild.name}`);
             return unbanning.edit(`Error occured while unbanning **${user.tag}**. Error: ${err}`);
         }
+        this._logger.log(`Unbanned: ${user.tag} from ${message.guild.name}`);
         return unbanning.edit(`Successfully unbanned **${user.tag}**`);
     }
 }

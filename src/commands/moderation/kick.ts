@@ -1,5 +1,5 @@
 import { Collection, GuildMember, User } from 'discord.js';
-import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
+import { logger, Command, CommandDecorators, Logger, Message, Middleware, Util } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
 
@@ -7,6 +7,8 @@ const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<BotClient> {
+    @logger private readonly _logger: Logger;
+
     constructor() {
         super({
             name: 'kick',
@@ -41,8 +43,10 @@ export default class extends Command<BotClient> {
         try {
             member.kick(reason);
         } catch (err) {
+            this._logger.error(`Error while kicking ${user.tag} from ${message.guild.name}`);
             return kicking.edit(`Error occured while kicking **${user.tag}**. Error: ${err}`);
         }
+        this._logger.log(`Kicked: ${user.tag} from ${message.guild.name}`);
         return kicking.edit(`Successfully kicked **${user.tag}**`);
     }
 }

@@ -1,5 +1,5 @@
 import { Collection, GuildMember, User } from 'discord.js';
-import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
+import { logger, Command, CommandDecorators, Logger, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
 
@@ -7,6 +7,8 @@ const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<BotClient> {
+    @logger private readonly _logger: Logger;
+
     constructor() {
         super({
             name: 'ban',
@@ -48,8 +50,10 @@ export default class extends Command<BotClient> {
         try {
             message.guild.ban(user, { reason: reason, days: 7 });
         } catch (err) {
+            this._logger.error(`Error banning ${user.tag} from ${message.guild.name}`);
             return banning.edit(`Error occured while banning **${user.tag}**. Error: ${err}`);
         }
+        this._logger.log(`Banned: ${user.tag} from ${message.guild.name}`);
         return banning.edit(`Successfully banned **${user.tag}**`);
     }
 }
