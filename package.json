@@ -11,14 +11,17 @@
     "prettier:write": "prettier --write **/*.{ts,js,json}"
   },
   "lint-staged": {
-    "**/*.{ts,js}": ["npm run prettier:write", "git add"]
+    "**/*.{ts,js}": [
+      "npm run prettier:write",
+      "git add"
+    ]
   },
   "keywords": [],
   "author": "Thomas Bowen",
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.1.2",
-    "@types/mocha": "^2.2.48",
+    "@types/mocha": "^5.0.0",
     "@types/node": "^9.4.6",
     "@types/sequelize": "^4.27.10",
     "@types/sinon": "^4.3.0",
