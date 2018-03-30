@@ -1,11 +1,22 @@
 import { Collection, GuildMember, User } from 'discord.js';
-import { logger, Command, CommandDecorators, Logger, Message, Middleware, Util } from 'yamdbf';
+import {
+    logger,
+    Command,
+    CommandDecorators,
+    Lang,
+    Logger,
+    Message,
+    Middleware,
+    ResourceLoader,
+    Util
+} from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
 import { prompt, PromptResult } from '../../util/prompt';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
+const resource: ResourceLoader = Lang.createResourceLoader('en_gb');
 
 export default class extends Command<BotClient> {
     @logger private readonly _logger: Logger;
@@ -55,6 +66,12 @@ export default class extends Command<BotClient> {
 
             if (promptResult === PromptResult.FAILURE)
                 return message.channel.send('Okay, aborting kick.');
+
+            try {
+                user.send(resource('MSG_DM_KICK', { guildName: message.guild.name, reason }));
+            } catch {
+                this._logger.error(`Failed to send kick DM to ${user.tag}.`);
+            }
 
             const kick: Message = (await message.channel.send(
                 `Kicking **${user.tag}**`

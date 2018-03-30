@@ -1,11 +1,21 @@
 import { Collection, GuildMember, User } from 'discord.js';
-import { logger, Command, CommandDecorators, Logger, Message, Middleware } from 'yamdbf';
+import {
+    logger,
+    Command,
+    CommandDecorators,
+    Lang,
+    Logger,
+    Message,
+    Middleware,
+    ResourceLoader
+} from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
 import { prompt, PromptResult } from '../../util/prompt';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
+const resource: ResourceLoader = Lang.createResourceLoader('en_gb');
 
 export default class extends Command<BotClient> {
     @logger private readonly _logger: Logger;
@@ -62,6 +72,12 @@ export default class extends Command<BotClient> {
 
             if (promptResult === PromptResult.FAILURE)
                 return message.channel.send('Okay, aborting ban.');
+
+            try {
+                user.send(resource('MSG_DM_BAN', { guildName: message.guild.name, reason }));
+            } catch {
+                this._logger.error(`Failed to send ban DM to ${user.tag}.`);
+            }
 
             const ban: Message = (await message.channel.send(`Banning **${user.tag}**`)) as Message;
             try {
