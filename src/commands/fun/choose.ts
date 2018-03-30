@@ -9,7 +9,8 @@ export default class extends Command<BotClient> {
             desc: 'Choose between one or multiple choices.',
             usage: '<prefix> choose <choice>, <choice> ...',
             aliases: ['decide', 'pick'],
-            argOpts: { separator: ',' }
+            argOpts: { separator: ',' },
+            group: 'fun'
         });
     }
 

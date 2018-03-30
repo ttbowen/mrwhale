@@ -7,7 +7,8 @@ export default class extends Command<BotClient> {
         super({
             name: 'whale',
             desc: 'Generate a whale face.',
-            usage: '<prefix>whale x<number>'
+            usage: '<prefix>whale x<number>',
+            group: 'fun'
         });
     }
 

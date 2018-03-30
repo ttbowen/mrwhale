@@ -8,7 +8,8 @@ export default class extends Command {
             name: 'chucknorris',
             desc: 'Get a random Chuck Norris joke.',
             usage: '<prefix>chucknorris <firstname> <lastname> <category>',
-            aliases: ['chuck', 'norris']
+            aliases: ['chuck', 'norris'],
+            group: 'fun'
         });
     }
 

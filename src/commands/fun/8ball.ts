@@ -8,7 +8,8 @@ export default class extends Command<BotClient> {
             name: '8ball',
             desc: 'A magic 8ball. Tells your fortune.',
             usage: '<prefix>8ball',
-            aliases: ['conchshell']
+            aliases: ['conchshell'],
+            group: 'fun'
         });
     }
 
