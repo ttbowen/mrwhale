@@ -6,7 +6,11 @@ const config = require('../../config.json');
 const path = require('path');
 
 export class BotClient extends Client {
-    moderation: ModerationManager;
+    private _moderation: ModerationManager;
+
+    get moderation(): ModerationManager {
+        return this._moderation;
+    }
 
     constructor() {
         super({
@@ -29,6 +33,6 @@ export class BotClient extends Client {
 
     @once('clientReady')
     private async _onClientReady(): Promise<void> {
-        this.moderation = new ModerationManager(this);
+        this._moderation = new ModerationManager(this);
     }
 }
