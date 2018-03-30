@@ -1,0 +1,9 @@
+[MSG_DM_BAN]
+**You have been banned from {{ guildName }}.**
+
+**Reason:** {{ reason }}
+
+[MSG_DM_KICK]
+**You have been kicked from {{ guildName }}.**
+
+**Reason:** {{ reason }}

@@ -20,6 +20,7 @@ gulp.task('build', function() {
 
     gulp.src('src/**/*.js').pipe(gulp.dest('dist'));
     gulp.src('src/**/*.json').pipe(gulp.dest('dist'));
+    gulp.src('src/**/*.lang').pipe(gulp.dest('dist'));
 
     return compile.js
         .pipe(sourcemaps.mapSources(src => path.join(__dirname, 'src', src)))

@@ -14,6 +14,7 @@ export class BotClient extends Client {
             owner: config.discord_owner,
             ratelimit: '10/1m',
             logLevel: LogLevel.ERROR,
+            localeDir: './dist/locale',
             statusText: 'In the Ocean.',
             commandsDir: './dist/commands',
             pause: true
