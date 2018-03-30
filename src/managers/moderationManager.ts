@@ -1,16 +1,23 @@
-import { GuildMember } from 'discord.js';
-import { Guild, GuildSettings, GuildStorage, Message } from 'yamdbf';
+import { GuildMember, User } from 'discord.js';
+import { Guild, GuildSettings, GuildStorage, Message, Util } from 'yamdbf';
 import { BotClient } from '../client/botClient';
 
 /**
  * Manager for moderation commands.
  */
 export class ModerationManager {
+    private _locks: { [guild: string]: { [user: string]: boolean } };
+    private _timeouts: { [guild: string]: { [user: string]: NodeJS.Timer } };
+
     /**
      * Create an instance of {@link ModerationManager}.
      * @param client The bot client.
+     * @param actions Moderation actions
      */
-    constructor(private client: BotClient) {}
+    constructor(private client: BotClient) {
+        this._locks = {};
+        this._timeouts = {};
+    }
 
     /**
      * Checks whether the specified {@link Guild} has set the mod role.
@@ -39,10 +46,44 @@ export class ModerationManager {
      * @param message The message which contains the command call.
      */
     async canCallCommand(message: Message): Promise<boolean> {
+        if (!message.guild) return false;
         if (!await this.hasSetModRole(message.guild)) return false;
         if (!await this.hasModRole(message.member)) return false;
 
         return true;
+    }
+
+    /**
+     * Set a lock on moderation action for {@link User}.
+     * @param guild The current guild.
+     * @param user  The user to set lock for.
+     */
+    setLock(guild: Guild, user: User): void {
+        const timeout = 30000;
+        Util.assignNestedValue(this._locks, [guild.id, user.id], true);
+        Util.assignNestedValue(
+            this._timeouts,
+            [guild.id, user.id],
+            setTimeout(() => this.removeLock(guild, user), timeout)
+        );
+    }
+
+    /**
+     * Remove locks for {@link User}.
+     * @param guild The current guild.
+     * @param user The user action is locked to.
+     */
+    removeLock(guild: Guild, user: User): void {
+        Util.removeNestedValue(this._locks, [guild.id, user.id]);
+    }
+
+    /**
+     * Check if there is a lock on a moderation action for {@link User}.
+     * @param guild The current guild.
+     * @param user The current user.
+     */
+    isLocked(guild: Guild, user: User): boolean {
+        return Util.getNestedValue(this._locks, [guild.id, user.id]);
     }
 
     /**
