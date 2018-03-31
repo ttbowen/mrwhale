@@ -42,6 +42,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "imgflipper": "^1.0.1",
     "node-opus": "^0.2.7",
     "pg": "^7.4.1",
     "request-promise": "^4.2.2",
