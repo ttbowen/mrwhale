@@ -11,10 +11,7 @@
     "prettier:write": "prettier --write **/*.{ts,js,json}"
   },
   "lint-staged": {
-    "**/*.{ts,js}": [
-      "npm run prettier:write",
-      "git add"
-    ]
+    "**/*.{ts,js}": ["npm run prettier:write", "git add"]
   },
   "keywords": [],
   "author": "Thomas Bowen",
@@ -46,10 +43,10 @@
     "d20": "^1.4.1",
     "imgflipper": "^1.0.1",
     "node-opus": "^0.2.7",
-    "pg": "^7.4.1",
     "request-promise": "^4.2.2",
-    "sequelize": "^4.36.0",
+    "sequelize": "^4.37.5",
     "sequelize-typescript": "^0.6.3",
+    "sqlite3": "^4.0.0",
     "yamdbf": "^3.0.1"
   }
 }
