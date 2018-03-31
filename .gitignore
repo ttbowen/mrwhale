@@ -63,7 +63,9 @@ typings/
 # compiled output
 dist
 
+# databases
+db
+
 # bot configurations
 config.json
 db.json
-storage
