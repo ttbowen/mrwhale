@@ -1,8 +1,9 @@
-import { Client, ListenerUtil, LogLevel } from 'yamdbf';
+import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { ModerationManager } from '../managers/moderationManager';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
+const db = require('../../db.json');
 const path = require('path');
 
 export class BotClient extends Client {
@@ -21,7 +22,8 @@ export class BotClient extends Client {
             localeDir: './dist/locale',
             statusText: 'In the Ocean.',
             commandsDir: './dist/commands',
-            pause: true
+            pause: true,
+            provider: Providers.SQLiteProvider(db.url)
         });
     }
 
