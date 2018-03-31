@@ -7,7 +7,7 @@ export default class extends Command<BotClient> {
         super({
             name: 'choose',
             desc: 'Choose between one or multiple choices.',
-            usage: '<prefix> choose <choice>, <choice> ...',
+            usage: '<prefix>choose <choice>, <choice> ...',
             aliases: ['decide', 'pick'],
             argOpts: { separator: ',' },
             group: 'fun'
