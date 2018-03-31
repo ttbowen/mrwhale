@@ -42,6 +42,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "imgflipper": "^1.0.1",
     "node-opus": "^0.2.7",
     "pg": "^7.4.1",
