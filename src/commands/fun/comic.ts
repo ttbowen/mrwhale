@@ -7,7 +7,7 @@ import * as _request from 'request';
 
 const request: any = bluebird.promisify(_request);
 
-export default class extends Command {
+export default class extends Command<BotClient> {
     public constructor() {
         super({
             name: 'comic',
