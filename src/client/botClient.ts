@@ -1,4 +1,5 @@
 import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
+import { Database } from '../database/database';
 import { ModerationManager } from '../managers/moderationManager';
 const { on, once } = ListenerUtil;
 
@@ -8,9 +9,14 @@ const path = require('path');
 
 export class BotClient extends Client {
     private _moderation: ModerationManager;
+    private _database: Database;
 
     get moderation(): ModerationManager {
         return this._moderation;
+    }
+
+    get database(): Database {
+        return this._database;
     }
 
     constructor() {
@@ -23,8 +29,9 @@ export class BotClient extends Client {
             statusText: 'In the Ocean.',
             commandsDir: './dist/commands',
             pause: true,
-            provider: Providers.SQLiteProvider(db.url)
+            provider: Providers.SQLiteProvider(db.settings_db_url)
         });
+        this._database = Database.instance(db.main_db_url);
     }
 
     @once('pause')
@@ -37,6 +44,7 @@ export class BotClient extends Client {
 
     @once('clientReady')
     private async _onClientReady(): Promise<void> {
+        await this._database.init();
         this._moderation = new ModerationManager(this);
     }
 }
