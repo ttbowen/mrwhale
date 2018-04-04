@@ -1,5 +1,6 @@
 import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
+import { LevelManager } from '../managers/levelManager';
 import { ModerationManager } from '../managers/moderationManager';
 const { on, once } = ListenerUtil;
 
@@ -9,6 +10,7 @@ const path = require('path');
 
 export class BotClient extends Client {
     private _moderation: ModerationManager;
+    private _levelManager: LevelManager;
     private _database: Database;
 
     get moderation(): ModerationManager {
@@ -46,5 +48,6 @@ export class BotClient extends Client {
     private async _onClientReady(): Promise<void> {
         await this._database.init();
         this._moderation = new ModerationManager(this);
+        this._levelManager = new LevelManager(this);
     }
 }
