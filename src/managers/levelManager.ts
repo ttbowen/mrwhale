@@ -50,7 +50,7 @@ export class LevelManager {
 
     @on('message')
     private async _onMessage(message: Message): Promise<any> {
-        if (message.author.id === this.client.user.id) return;
+        if (message.author.id === this.client.user.id || message.author.bot) return;
 
         const timeForExp = 60000;
         const last =
