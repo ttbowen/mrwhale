@@ -41,6 +41,7 @@ export class BotClient extends Client {
         await this.setDefaultSetting('prefix', config.default_prefix);
         await this.setDefaultSetting('imgflip_user', config.imgflip_user);
         await this.setDefaultSetting('imgflip_pass', config.imgflip_pass);
+        await this.setDefaultSetting('levels', true);
         this.continue();
     }
 

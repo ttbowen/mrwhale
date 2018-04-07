@@ -18,6 +18,9 @@ export default class extends Command<BotClient> {
     }
 
     async action(message: Message): Promise<any> {
+        const enabled = await message.guild.storage.settings.get('levels');
+        if (!enabled) return;
+
         try {
             const guildId = message.guild.id;
             const userId = message.author.id;
@@ -45,16 +48,16 @@ export default class extends Command<BotClient> {
 
             const colour = 7911109;
             const embed = new RichEmbed()
-                .addField(`Rank`, `${info.rank}/${playerSorted.length}`)
-                .addField(`Level`, `${info.level}`, true)
-                .addField(`Level Exp`, `${info.remainingExp}/${info.levelExp}`, true)
+                .addField(`Rank`, `${info.rank}/${playerSorted.length}`, true)
+                .addField(`Lvl`, `${info.level}`, true)
+                .addField(`Lvl Exp`, `${info.remainingExp}/${info.levelExp}`, true)
                 .addField(`Total Exp`, `${info.totalExp}`, true)
                 .setColor(colour)
                 .setAuthor(message.author.username, message.author.avatarURL);
 
             return message.channel.send('', { embed: embed });
         } catch {
-            return message.channel.send(`An error occured while fetching rank`);
+            return message.channel.send(`An error occured while fetching rank.`);
         }
     }
 }

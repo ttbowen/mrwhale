@@ -50,7 +50,8 @@ export class LevelManager {
 
     @on('message')
     private async _onMessage(message: Message): Promise<any> {
-        if (message.author.id === this.client.user.id || message.author.bot) return;
+        const enabled = await message.guild.storage.settings.get('levels');
+        if (message.author.id === this.client.user.id || message.author.bot || !enabled) return;
 
         const timeForExp = 60000;
         const last =
@@ -63,8 +64,8 @@ export class LevelManager {
                 [message.guild.id, message.author.id],
                 Date.now()
             );
-            const min = 15;
-            const max = 25;
+            const min = 5;
+            const max = 10;
             const expGain = this.getRandomInt(min, max);
 
             const user = await Database.db.models.User.findOrCreate({
