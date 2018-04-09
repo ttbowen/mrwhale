@@ -14,16 +14,11 @@ export default class extends Command<BotClient> {
         });
     }
 
-    async action(message: Message): Promise<any> {
-        const prefix: string =
-            (await message.guild.storage.settings.get('prefix')) ||
-            (await this.client.storage.get('prefix'));
-
-        const paste: string = message.content.replace(`${prefix}${this.name}`, '');
-
+    async action(message: Message, args: string[]): Promise<any> {
         if (!await message.guild.storage.settings.get('pastebin'))
             return message.channel.send('No API key provided for pastebin.');
 
+        const paste = args.join(' ');
         if (!paste || paste === '')
             return message.channel.send('Please provide a paste to upload.');
 
