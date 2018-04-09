@@ -15,7 +15,8 @@ export default class extends Command<BotClient> {
         });
     }
 
-    async action(message: Message, [query]: [string]): Promise<any> {
+    async action(message: Message, args: string[]): Promise<any> {
+        const query = args.join(' ');
         if (!query) return message.channel.send('Please provide a search.');
 
         const max = 1900;
