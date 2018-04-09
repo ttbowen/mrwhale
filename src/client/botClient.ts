@@ -1,3 +1,4 @@
+import { GuildMember, User } from 'discord.js';
 import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
 import { LevelManager } from '../managers/levelManager';
@@ -42,6 +43,8 @@ export class BotClient extends Client {
         await this.setDefaultSetting('imgflip_user', config.imgflip_user);
         await this.setDefaultSetting('imgflip_pass', config.imgflip_pass);
         await this.setDefaultSetting('pastebin', config.pastebin);
+        await this.setDefaultSetting('youtube_api', config.youtube_api);
+        await this.setDefaultSetting('google_api', config.google_api);
         await this.setDefaultSetting('levels', true);
         this.continue();
     }
@@ -51,5 +54,17 @@ export class BotClient extends Client {
         await this._database.init();
         this._moderation = new ModerationManager(this);
         this._levelManager = new LevelManager(this);
+    }
+
+    @on('userUpdate')
+    private async _onUserUpdate(oldUser: User, newUser: User): Promise<void> {
+        Database.db.models.User.update(
+            {
+                username: newUser.username,
+                avatarUrl: newUser.avatarURL,
+                discriminator: newUser.discriminator
+            },
+            { where: { id: newUser.id } }
+        );
     }
 }
