@@ -40,12 +40,9 @@ export class BotClient extends Client {
     @once('pause')
     private async _onPause(): Promise<void> {
         await this.setDefaultSetting('prefix', config.default_prefix);
-        await this.setDefaultSetting('imgflip_user', config.imgflip_user);
-        await this.setDefaultSetting('imgflip_pass', config.imgflip_pass);
-        await this.setDefaultSetting('pastebin', config.pastebin);
-        await this.setDefaultSetting('youtube_api', config.youtube_api);
-        await this.setDefaultSetting('google_api', config.google_api);
         await this.setDefaultSetting('levels', true);
+        await this.storage.set('youtube_api', config.youtube_api);
+        await this.storage.set('google_api', config.google_api);
         this.continue();
     }
 
