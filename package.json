@@ -11,10 +11,7 @@
     "prettier:write": "prettier --write **/*.{ts,js,json}"
   },
   "lint-staged": {
-    "**/*.{ts,js}": [
-      "npm run prettier:write",
-      "git add"
-    ]
+    "**/*.{ts,js}": ["npm run prettier:write", "git add"]
   },
   "keywords": [],
   "author": "Thomas Bowen",
@@ -51,6 +48,7 @@
     "sequelize-typescript": "^0.6.3",
     "sqlite3": "^4.0.0",
     "wikijs": "^4.6.1",
+    "wolfram": "^0.3.4",
     "yamdbf": "^3.0.1"
   }
 }
