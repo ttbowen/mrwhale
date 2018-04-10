@@ -24,12 +24,12 @@ export default class extends Command<BotClient> {
                 const commit = data.toString();
                 embed.addField('Commit', commit);
 
-                return message.channel.sendEmbed(embed);
+                return message.channel.send({ embed });
             }
         });
 
         git.on('close', code => {
-            if (code !== 0) return message.channel.sendEmbed(embed);
+            if (code !== 0) return message.channel.send({ embed });
         });
     }
 }

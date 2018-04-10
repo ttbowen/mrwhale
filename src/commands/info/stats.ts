@@ -26,6 +26,6 @@ export default class extends Command<BotClient> {
             .setTitle(`${this.client.user.username.toUpperCase()}'S STATISTICS`)
             .setColor(colour);
 
-        return message.channel.sendEmbed(embed);
+        return message.channel.send({ embed });
     }
 }
