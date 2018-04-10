@@ -33,6 +33,10 @@ export default class extends Command<BotClient> {
         const query = args.join(' ');
         if (!query) return message.channel.send('Please provide a search query.');
 
+        const response = (await message.channel.send(
+            'Querying wolfram. Please wait...'
+        )) as Message;
+
         const result = await this.queryWolfram(query);
 
         if (!result || result.length < 1)
@@ -47,6 +51,6 @@ export default class extends Command<BotClient> {
         }
         embed.setColor(colour).setAuthor(message.author.username, message.author.avatarURL);
 
-        return message.channel.send('', { embed: embed });
+        response.edit('', { embed: embed });
     }
 }
