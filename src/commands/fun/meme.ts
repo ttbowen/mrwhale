@@ -1,9 +1,10 @@
-import { Command, Message } from 'yamdbf';
+import * as bluebird from 'bluebird';
+import * as Imgflipper from 'imgflipper';
+import { ClientStorage, Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import * as memes from '../../data/memes';
 
-import * as bluebird from 'bluebird';
-import * as Imgflipper from 'imgflipper';
+const config = require('../../../config.json');
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -20,9 +21,15 @@ export default class extends Command<BotClient> {
         message: Message,
         [memeName, top, bottom]: [string, string, string]
     ): Promise<any> {
-        const username: string = await message.guild.storage.settings.get('imgflip_user');
-        const password: string = await message.guild.storage.settings.get('imgflip_pass');
-        const imgFlip: Imgflipper = new Imgflipper(username, password);
+        const storage: ClientStorage = this.client.storage;
+
+        if (!await storage.get('imgflip_user')) storage.set('imgflip_user', config.imgflip_user);
+        if (!await storage.get('imgflip_pass')) storage.set('imgflip_pass', config.imgflip_pass);
+
+        const imgFlip: Imgflipper = new Imgflipper(
+            await storage.get('imgflip_user'),
+            await storage.get('imgflip_pass')
+        );
 
         memeName = memeName.toLowerCase().trim();
         if (memeName === 'list') {
