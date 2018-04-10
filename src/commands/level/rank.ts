@@ -66,7 +66,10 @@ export default class extends Command<BotClient> {
                 .addField(`Lvl Exp`, `${info.remainingExp}/${info.levelExp}`, true)
                 .addField(`Total Exp`, `${info.totalExp}`, true)
                 .setColor(colour)
-                .setAuthor(user.username, user.avatarUrl);
+                .setAuthor(
+                    member ? member.user.username : message.author.username,
+                    member ? member.user.avatarURL : message.author.avatarURL
+                );
 
             return message.channel.send('', { embed: embed });
         } catch {
