@@ -45,7 +45,7 @@ export default class extends Command<BotClient> {
             }
             embed.setColor(colour).setAuthor(message.author.username, message.author.avatarURL);
 
-            return message.channel.sendEmbed(embed);
+            return message.channel.send({ embed });
         });
     }
 }
