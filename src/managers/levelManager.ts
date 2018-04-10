@@ -50,6 +50,8 @@ export class LevelManager {
 
     @on('message')
     private async _onMessage(message: Message): Promise<any> {
+        if (message.channel.type === 'dm') return;
+
         const enabled = await message.guild.storage.settings.get('levels');
         if (message.author.id === this.client.user.id || message.author.bot || !enabled) return;
 
