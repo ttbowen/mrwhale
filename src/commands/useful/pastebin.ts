@@ -1,7 +1,8 @@
+import * as request from 'request-promise';
 import { Client, Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 
-import * as request from 'request-promise';
+const config = require('../../../config.json');
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -15,8 +16,8 @@ export default class extends Command<BotClient> {
     }
 
     async action(message: Message, args: string[]): Promise<any> {
-        if (!await message.guild.storage.settings.get('pastebin'))
-            return message.channel.send('No API key provided for pastebin.');
+        if (!await this.client.storage.get('pastebin'))
+            this.client.storage.set('pastebin', config.pastebin);
 
         const paste = args.join(' ');
         if (!paste || paste === '')
@@ -28,7 +29,7 @@ export default class extends Command<BotClient> {
             form: {
                 api_option: 'paste',
                 api_paste_code: paste,
-                api_dev_key: await message.guild.storage.settings.get('pastebin')
+                api_dev_key: await this.client.storage.get('pastebin')
             }
         };
 
