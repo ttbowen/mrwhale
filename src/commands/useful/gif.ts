@@ -15,7 +15,7 @@ export default class extends Command<BotClient> {
     async action(message: Message, args: string[]): Promise<any> {
         const search = args.join(' ');
 
-        if (!search) return message.reply('You must pass a search query for this command.');
+        if (!search) return message.channel.send('You must pass a search query for this command.');
 
         const options = {
             url: `http://api.giphy.com/v1/gifs/random?tag=${encodeURI(search)}`,
