@@ -21,8 +21,8 @@ export default class extends Command<BotClient> {
         const options = {
             url: `https://www.googleapis.com/customsearch/v1`,
             qs: {
-                key: await message.guild.storage.settings.get('youtube_api'),
-                cx: await message.guild.storage.settings.get('google_api'),
+                key: await this.client.storage.get('youtube_api'),
+                cx: await this.client.storage.get('google_api'),
                 q: search.replace(/\s/g, '+'),
                 alt: 'json',
                 num: 5,
