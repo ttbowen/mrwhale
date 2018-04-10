@@ -71,7 +71,7 @@ export default class extends Command<BotClient> {
                     member ? member.user.avatarURL : message.author.avatarURL
                 );
 
-            return message.channel.send('', { embed: embed });
+            return message.channel.sendEmbed(embed);
         } catch {
             return message.channel.send(`An error occured while fetching rank.`);
         }
