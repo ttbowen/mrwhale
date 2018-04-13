@@ -1,6 +1,6 @@
 import { GuildMember, User } from 'discord.js';
 import { Guild, GuildSettings, GuildStorage, Message, Util } from 'yamdbf';
-import { BotClient } from '../client/botClient';
+import { BotClient } from '../../client/botClient';
 
 /**
  * Manager for moderation commands.

@@ -1,8 +1,8 @@
 import { GuildMember, User } from 'discord.js';
 import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
-import { LevelManager } from '../managers/levelManager';
-import { ModerationManager } from '../managers/moderationManager';
+import { LevelManager } from './managers/levelManager';
+import { ModerationManager } from './managers/moderationManager';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
