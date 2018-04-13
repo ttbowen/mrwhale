@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { LevelManager } from '../src/managers/levelManager';
+import { LevelManager } from '../src/client/managers/levelManager';
 
 describe('levelToExp', () => {
     it('should calculate the correct experience from level', () => {
