@@ -41,8 +41,9 @@ export class BotClient extends Client {
     private async _onPause(): Promise<void> {
         await this.setDefaultSetting('prefix', config.default_prefix);
         await this.setDefaultSetting('levels', true);
-        await this.storage.set('youtube_api', config.youtube_api);
         await this.storage.set('google_api', config.google_api);
+        await this.storage.set('google_custom_search_key', config.google_custom_search_key);
+        await this.storage.set('youtube_api', config.youtube_api);
         this.continue();
     }
 

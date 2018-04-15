@@ -417,4 +417,4 @@ export default[
 'usaflag',
 'weird',
 'whimsy'
-]
+];

@@ -21,8 +21,8 @@ export default class extends Command<BotClient> {
         const options = {
             url: `https://www.googleapis.com/customsearch/v1`,
             qs: {
-                key: await this.client.storage.get('youtube_api'),
-                cx: await this.client.storage.get('google_api'),
+                key: await this.client.storage.get('google_api'),
+                cx: await this.client.storage.get('google_custom_search_key'),
                 q: search.replace(/\s/g, '+'),
                 alt: 'json',
                 num: 5,
@@ -34,7 +34,6 @@ export default class extends Command<BotClient> {
         return request(options).then(body => {
             if (!body.items || body.items.length === 0)
                 return message.channel.send(`No result for '${search}'`);
-
             const output = '';
             const colour = 7911109;
             const embed = new RichEmbed();

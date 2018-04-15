@@ -42,6 +42,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "@types/request-promise": "^4.1.41",
     "cheerio": "^1.0.0-rc.2",
     "d20": "^1.4.1",
     "imgflipper": "^1.0.1",
@@ -52,6 +53,7 @@
     "sqlite3": "^4.0.0",
     "wikijs": "^4.6.1",
     "wolfram": "^0.3.4",
-    "yamdbf": "^3.0.1"
+    "yamdbf": "^3.0.1",
+    "ytdl": "^0.10.1"
   }
 }
