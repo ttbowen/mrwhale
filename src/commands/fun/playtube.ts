@@ -146,7 +146,7 @@ export default class extends Command<BotClient> {
         const videoId = (/[&?]v=([^&\s]+)/).exec(joinedArgs);
         const videoPlaylistId = (/[&?]list=([^&\s]+)/).exec(joinedArgs);
 
-        let currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
+        const currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
         let currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]);
 
         const options = {
@@ -183,6 +183,7 @@ export default class extends Command<BotClient> {
             return request(options)
                 .then(body => {
                     const embed = new RichEmbed();
+                    embed.setTitle('INFO');
                     embed.setURL('https://www.youtube.com/watch?v=' + currentVidId);
                     embed.setImage(body.items[0].snippet.thumbnails.default.url);
                     embed.setColor('black');
@@ -216,9 +217,59 @@ export default class extends Command<BotClient> {
             } else {
                 options.qs.id = currentPlaylistId[this.getPreviousIdFromPlaylist(currentPlaylistId, currentVidId)][0];
             }
+        } else if (videoId !== null || videoPlaylistId !== null) {
+            if (videoId !== null) {
+                Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
+                options.qs.part = 'snippet';
+                options.qs.id = videoId[1];
+                // currentVidId = options.qs.id;
+            }
+            if (videoPlaylistId != null && videoPlaylistId[1] !== null) {
+                const playlistOption = {
+                    url: 'https://www.googleapis.com/youtube/v3/playlistItems',
+                    qs: {
+                        key: await this.client.storage.get('youtube_api'),
+                        playlistId: videoPlaylistId[1],
+                        part: 'contentDetails,snippet',
+                        maxResults: '25'
+                    },
+                    json: true
+                };
+                await request(playlistOption)
+                    .then(body => {
+                        if (!body.items || body.items.length === 0) {
+                            this.clearData(message.guild.id);
+                            return message.channel.send('Can\'t find any video in the playlist');
+                        } else {
+                            Util.assignNestedValue(
+                                this._currentPlaylistIds,
+                                [message.guild.id],
+                                this.generatePlaylistArray(body)
+                            );
+                            currentPlaylistId = Util.getNestedValue(
+                                this._currentPlaylistIds, [message.guild.id]
+                            );
+
+                            if (videoId === null) {
+                                Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
+                                options.qs.part = 'snippet';
+                                options.qs.id = currentPlaylistId[0][0];
+                                // currentVidId = options.qs.id;
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        this.clearData(message.guild.id);
+                        return message.channel.send(
+                            'Can\'t create playlist array. Error: ' + err
+                        );
+                    });
+            } else {
+                Util.assignNestedValue(this._currentPlaylistIds, [message.guild.id], {});
+            }
         }
         // Search for a video if none of the other arguments are detected
-        else if (videoId === null && videoPlaylistId === null) {
+        else {
             const searchoptions = {
                 url: 'https://www.googleapis.com/youtube/v3/search',
                 qs: {
@@ -253,58 +304,6 @@ export default class extends Command<BotClient> {
                     this.clearData(message.guild.id);
                     return message.channel.send('Can\'t connect to video search api. Error: ' + err);
                 });
-        } else {
-            if (videoId !== null || videoPlaylistId !== null) {
-                if (videoId !== null) {
-                    Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
-                    options.qs.part = 'snippet';
-                    options.qs.id = videoId[1];
-                    currentVidId = options.qs.id;
-                }
-                if (videoPlaylistId != null && videoPlaylistId[1] !== null) {
-                    const playlistOption = {
-                        url: 'https://www.googleapis.com/youtube/v3/playlistItems',
-                        qs: {
-                            key: await this.client.storage.get('youtube_api'),
-                            playlistId: videoPlaylistId[1],
-                            part: 'contentDetails,snippet',
-                            maxResults: '25'
-                        },
-                        json: true
-                    };
-                    await request(playlistOption)
-                        .then(body => {
-                            if (!body.items || body.items.length === 0) {
-                                this.clearData(message.guild.id);
-                                return message.channel.send('Can\'t find any video in the playlist');
-                            } else {
-                                Util.assignNestedValue(
-                                    this._currentPlaylistIds,
-                                    [message.guild.id],
-                                    this.generatePlaylistArray(body)
-                                );
-                                currentPlaylistId = Util.getNestedValue(
-                                    this._currentPlaylistIds, [message.guild.id]
-                                );
-
-                                if (videoId === null) {
-                                    Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
-                                    options.qs.part = 'snippet';
-                                    options.qs.id = currentPlaylistId[0][0];
-                                    currentVidId = options.qs.id;
-                                }
-                            }
-                        })
-                        .catch(err => {
-                            this.clearData(message.guild.id);
-                            return message.channel.send(
-                                'Can\'t create playlist array. Error: ' + err
-                            );
-                        });
-                } else {
-                    Util.assignNestedValue(this._currentPlaylistIds, [message.guild.id], {});
-                }
-            }
         }
 
         if ((!Util.getNestedValue(this._currentVidId, [message.guild.id]) ||
