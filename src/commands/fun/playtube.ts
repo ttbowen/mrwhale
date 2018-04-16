@@ -21,7 +21,7 @@ export default class extends Command<BotClient> {
         super({
             name: 'playtube',
             desc: 'play an audio stream from a youtube link',
-            usage: '<prefix>playtube <link>/<search query>/<stop>/<info>/<previous>',
+            usage: '<prefix>playtube <link>/<search query>/<stop>/<info>/<next>/<previous>',
             group: 'fun',
             aliases: ['yt', 'radio']
         });
