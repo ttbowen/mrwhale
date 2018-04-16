@@ -1,8 +1,8 @@
 import { ListenerUtil, Message, Util } from 'yamdbf';
-import { BotClient } from '../client/botClient';
-import { Database } from '../database/database';
-import User from '../database/models/User';
-import UserExpStats from '../database/models/UserExpStats';
+import { Database } from '../../database/database';
+import User from '../../database/models/User';
+import UserExpStats from '../../database/models/UserExpStats';
+import { BotClient } from '../botClient';
 const { on, once, registerListeners } = ListenerUtil;
 
 /**

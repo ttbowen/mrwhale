@@ -1,8 +1,8 @@
 import { GuildMember, User } from 'discord.js';
 import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
-import { LevelManager } from '../managers/levelManager';
-import { ModerationManager } from '../managers/moderationManager';
+import { LevelManager } from './managers/levelManager';
+import { ModerationManager } from './managers/moderationManager';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
@@ -10,17 +10,10 @@ const db = require('../../db.json');
 const path = require('path');
 
 export class BotClient extends Client {
-    private _moderation: ModerationManager;
-    private _levelManager: LevelManager;
-    private _database: Database;
+    private readonly _level: LevelManager;
+    private readonly _database: Database;
 
-    get moderation(): ModerationManager {
-        return this._moderation;
-    }
-
-    get database(): Database {
-        return this._database;
-    }
+    readonly moderation: ModerationManager;
 
     constructor() {
         super({
@@ -34,7 +27,9 @@ export class BotClient extends Client {
             pause: true,
             provider: Providers.SQLiteProvider(db.settings_db_url)
         });
+        this.moderation = new ModerationManager(this);
         this._database = Database.instance(db.main_db_url);
+        this._level = new LevelManager(this);
     }
 
     @once('pause')
@@ -50,8 +45,6 @@ export class BotClient extends Client {
     @once('clientReady')
     private async _onClientReady(): Promise<void> {
         await this._database.init();
-        this._moderation = new ModerationManager(this);
-        this._levelManager = new LevelManager(this);
     }
 
     @on('userUpdate')
