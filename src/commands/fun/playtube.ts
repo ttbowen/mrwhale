@@ -33,8 +33,8 @@ export default class extends Command<BotClient> {
     async autoPlayNext(message: Message): Promise<void> {
         // Do a check to avoid command stacking
         if (
-            (!Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) &&
-            Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0) ||
+            !Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
+            Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0 ||
             (Util.getNestedValue(this._changingTracks, [message.guild.id]) === true &&
              Util.getNestedValue(this._changingTracks, [message.guild.id]))
         ) {
@@ -47,7 +47,6 @@ export default class extends Command<BotClient> {
     clearData(guildId: string): void {
         Util.assignNestedValue(this._currentVidId, [guildId], '');
         Util.assignNestedValue(this._currentPlaylistIds, [guildId], []);
-        Util.assignNestedValue(this._changingTracks, [guildId], false);
     }
 
     // Check if the bot is connected to the same voice channel
