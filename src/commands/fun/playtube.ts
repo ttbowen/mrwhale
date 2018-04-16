@@ -141,19 +141,10 @@ export default class extends Command<BotClient> {
     }
 
     async action(message: Message, args: string[]): Promise<any> {
-        const ytExpression = [
-            '^((?:https?:)?\\/\\/)?((?:www|m)\\.)?',
-            '((?:youtube\\.com|youtu.be))',
-            '(\\/(?:[\\w\\-]+\\?v=|embed\\/|v\\/)?)([\\w\\-]+)',
-            '(?:&list=)?(\\S+)?'
-        ];
-
-        const ytRegex = new RegExp(ytExpression.join(''), 'gm');
         const joinedArgs = args.join('').replace(/\s/g, '+');
 
-        const urlIdRegexGroup = 5;
-        const urlPlaylistRegexGroup = 6;
-        const videoId = ytRegex.exec(joinedArgs);
+        const videoId = (/[&?]v=([^&\s]+)/).exec(joinedArgs);
+        const videoPlaylistId = (/[&?]list=([^&\s]+)/).exec(joinedArgs);
 
         let currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
         let currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]);
@@ -192,6 +183,7 @@ export default class extends Command<BotClient> {
             return request(options)
                 .then(body => {
                     const embed = new RichEmbed();
+                    embed.setURL('https://www.youtube.com/watch?v=' + currentVidId);
                     embed.setImage(body.items[0].snippet.thumbnails.default.url);
                     embed.setColor('black');
                     embed.addField(
@@ -226,7 +218,7 @@ export default class extends Command<BotClient> {
             }
         }
         // Search for a video if none of the other arguments are detected
-        else if (videoId === null) {
+        else if (videoId === null && videoPlaylistId === null) {
             const searchoptions = {
                 url: 'https://www.googleapis.com/youtube/v3/search',
                 qs: {
@@ -246,6 +238,7 @@ export default class extends Command<BotClient> {
                 .then(body => {
                     if (!body.items || body.items.length === 0) {
                         tempMsg.delete();
+                        this.clearData(message.guild.id);
                         return message.channel.send('Can\'t find any video matching the query');
                     } else {
                         tempMsg.delete();
@@ -261,17 +254,19 @@ export default class extends Command<BotClient> {
                     return message.channel.send('Can\'t connect to video search api. Error: ' + err);
                 });
         } else {
-            if (videoId !== null) {
-                Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
-                options.qs.part = 'snippet';
-                options.qs.id = videoId[urlIdRegexGroup];
-                currentVidId = options.qs.id;
-                if (videoId[urlPlaylistRegexGroup] !== null && videoId[urlPlaylistRegexGroup]) {
+            if (videoId !== null || videoPlaylistId !== null) {
+                if (videoId !== null) {
+                    Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
+                    options.qs.part = 'snippet';
+                    options.qs.id = videoId[1];
+                    currentVidId = options.qs.id;
+                }
+                if (videoPlaylistId != null && videoPlaylistId[1] !== null) {
                     const playlistOption = {
                         url: 'https://www.googleapis.com/youtube/v3/playlistItems',
                         qs: {
                             key: await this.client.storage.get('youtube_api'),
-                            playlistId: videoId[urlPlaylistRegexGroup],
+                            playlistId: videoPlaylistId[1],
                             part: 'contentDetails,snippet',
                             maxResults: '25'
                         },
@@ -280,6 +275,7 @@ export default class extends Command<BotClient> {
                     await request(playlistOption)
                         .then(body => {
                             if (!body.items || body.items.length === 0) {
+                                this.clearData(message.guild.id);
                                 return message.channel.send('Can\'t find any video in the playlist');
                             } else {
                                 Util.assignNestedValue(
@@ -290,6 +286,13 @@ export default class extends Command<BotClient> {
                                 currentPlaylistId = Util.getNestedValue(
                                     this._currentPlaylistIds, [message.guild.id]
                                 );
+
+                                if (videoId === null) {
+                                    Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
+                                    options.qs.part = 'snippet';
+                                    options.qs.id = currentPlaylistId[0][0];
+                                    currentVidId = options.qs.id;
+                                }
                             }
                         })
                         .catch(err => {
@@ -302,6 +305,12 @@ export default class extends Command<BotClient> {
                     Util.assignNestedValue(this._currentPlaylistIds, [message.guild.id], {});
                 }
             }
+        }
+
+        if ((!Util.getNestedValue(this._currentVidId, [message.guild.id]) ||
+            Util.getNestedValue(this._currentVidId, [message.guild.id]) === '') &&
+            options.qs.id === '') {
+             return;
         }
 
         const channel = message.member.voiceChannel;
