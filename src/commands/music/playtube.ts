@@ -14,7 +14,10 @@ import { BotClient } from '../../client/botClient';
 
 export default class extends Command<BotClient> {
     private _currentVidId: { [guild: string]: string };
+    // The format should be Array<[video id, video name]>
     private _currentPlaylistIds: { [guild: string]: Array<[string, string]> };
+    // Make sure to set to true whenever a track change command is occuring
+    // To avoid command stacking
     private _changingTracks: { [guild: string]: boolean };
 
     constructor() {
@@ -40,10 +43,14 @@ export default class extends Command<BotClient> {
         ) {
             return;
         }
+        // Do the following so that the autoplay keeps running
+        // even when the original caller is no longer on the voice channel.
         const botMsg = await message.channel.send('Playing the next video in the playlist');
         return this.action(<Message>botMsg, ['next']);
     }
 
+    // The data is always/should be cleared after every error that occurs
+    // so that the bot won't be able to retrieve invalid data
     clearData(guildId: string): void {
         Util.assignNestedValue(this._currentVidId, [guildId], '');
         Util.assignNestedValue(this._currentPlaylistIds, [guildId], []);
@@ -149,6 +156,10 @@ export default class extends Command<BotClient> {
         const currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
         let currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]);
 
+        // the value in this variable is supposed to
+        // be defined in the script. To save request count.
+        // Except if the arg is info, Where the command only
+        // needs the info and don't have to retrieve the video
         const options = {
             url: 'https://www.googleapis.com/youtube/v3/videos',
             qs: {
@@ -224,7 +235,6 @@ export default class extends Command<BotClient> {
                 Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
                 options.qs.part = 'snippet';
                 options.qs.id = videoId[1];
-                // currentVidId = options.qs.id;
             }
             if (videoPlaylistId != null && videoPlaylistId[1] !== null) {
                 const playlistOption = {
@@ -252,11 +262,12 @@ export default class extends Command<BotClient> {
                                 this._currentPlaylistIds, [message.guild.id]
                             );
 
+                            // If the playlist id isn't null but the video id is,
+                            // the first video in the playlist is played
                             if (videoId === null) {
                                 Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
                                 options.qs.part = 'snippet';
                                 options.qs.id = currentPlaylistId[0][0];
-                                // currentVidId = options.qs.id;
                             }
                         }
                     })
@@ -316,7 +327,7 @@ export default class extends Command<BotClient> {
 
         const channel = message.member.voiceChannel;
 
-        // Leave all channel to avoid packet error.
+        // Leave all channel in the senders guild to avoid packet error.
         // Also gives a nice notification whenever
         // the current stream changes
         this.leaveAllChannelsInGuild(message.guild);
