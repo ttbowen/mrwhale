@@ -14,9 +14,8 @@ import { BotClient } from '../../client/botClient';
 
 export default class extends Command<BotClient> {
     private _currentVidId: { [guild: string]: string };
-    private _currentPlaylistIds: { [guild: string]: string[] };
+    private _currentPlaylistIds: { [guild: string]: Array<[string, string]> };
     private _changingTracks: { [guild: string]: boolean };
-    private _tset: { [guild: string]: Array<[string, string]> };
 
     constructor() {
         super({
@@ -77,11 +76,11 @@ export default class extends Command<BotClient> {
         return false;
     }
 
-    getNextIdFromPlaylist(playlist: string[], currentId: string): string {
+    getNextIdFromPlaylist(playlist: Array<[string, string]>, currentId: string): number {
         let index = 0;
         let returnIndex = 0;
         do {
-            if (currentId === playlist[index]) {
+            if (currentId === playlist[index][0]) {
                 if (playlist.length === 1) {
                     returnIndex = 0;
                     break;
@@ -95,14 +94,14 @@ export default class extends Command<BotClient> {
             }
             index++;
         } while (index < playlist.length);
-        return playlist[returnIndex];
+        return returnIndex;
     }
 
-    getPreviousIdFromPlaylist(playlist: string[], currentId: string): string {
+    getPreviousIdFromPlaylist(playlist: Array<[string, string]>, currentId: string): number {
         let index = 0;
         let returnIndex = 0;
         do {
-            if (currentId === playlist[index]) {
+            if (currentId === playlist[index][0]) {
                 if (playlist.length === 1) {
                     returnIndex = 0;
                     break;
@@ -116,16 +115,13 @@ export default class extends Command<BotClient> {
             }
             index++;
         } while (index < playlist.length);
-        console.log(returnIndex);
-        console.log(currentId);
-        console.log(playlist[returnIndex]);
-        return playlist[returnIndex];
+        return returnIndex;
     }
 
-    generatePlaylistArray(body: any): string[] {
-        const idArray = [];
+    generatePlaylistArray(body: any): Array<[string, string]> {
+        const idArray = Array<[string, string]>(0);
         body.items.forEach(element => {
-            idArray.push(element.contentDetails.videoId);
+            idArray.push([element.contentDetails.videoId, element.snippet.title]);
         });
         return idArray;
     }
@@ -158,8 +154,8 @@ export default class extends Command<BotClient> {
         const urlPlaylistRegexGroup = 6;
         const videoId = ytRegex.exec(joinedArgs);
 
-        const currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
-        const currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]);
+        let currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
+        let currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]);
 
         const options = {
             url: 'https://www.googleapis.com/youtube/v3/videos',
@@ -223,9 +219,9 @@ export default class extends Command<BotClient> {
             Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
             options.qs.part = 'snippet,statistics';
             if (joinedArgs.toLowerCase() === 'next') {
-                options.qs.id = this.getNextIdFromPlaylist(currentPlaylistId, currentVidId);
+                options.qs.id = currentPlaylistId[this.getNextIdFromPlaylist(currentPlaylistId, currentVidId)][0];
             } else {
-                options.qs.id = this.getPreviousIdFromPlaylist(currentPlaylistId, currentVidId);
+                options.qs.id = currentPlaylistId[this.getPreviousIdFromPlaylist(currentPlaylistId, currentVidId)][0];
             }
         }
         // Search for a video if none of the other arguments are detected
@@ -265,13 +261,14 @@ export default class extends Command<BotClient> {
                 Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
                 options.qs.part = 'snippet';
                 options.qs.id = videoId[urlIdRegexGroup];
+                currentVidId = options.qs.id;
                 if (videoId[urlPlaylistRegexGroup] !== null && videoId[urlPlaylistRegexGroup]) {
                     const playlistOption = {
                         url: 'https://www.googleapis.com/youtube/v3/playlistItems',
                         qs: {
                             key: await this.client.storage.get('youtube_api'),
                             playlistId: videoId[urlPlaylistRegexGroup],
-                            part: 'contentDetails,id,snippet',
+                            part: 'contentDetails,snippet',
                             maxResults: '25'
                         },
                         json: true
@@ -285,6 +282,9 @@ export default class extends Command<BotClient> {
                                     this._currentPlaylistIds,
                                     [message.guild.id],
                                     this.generatePlaylistArray(body)
+                                );
+                                currentPlaylistId = Util.getNestedValue(
+                                    this._currentPlaylistIds, [message.guild.id]
                                 );
                             }
                         })
@@ -311,12 +311,13 @@ export default class extends Command<BotClient> {
         request(options).then(body => {
             message.channel.send('**Now Playing: **' + '- ' + body.items[0].snippet.title + ' -');
             if (
-                !Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) &&
+                Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
                 Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length !== 0
             ) {
-                channel.leave();
-                message.channel.send('Finished playing!');
-                return this.clearData(message.guild.id);
+                message.channel.send('**Next** : ' +
+                currentPlaylistId[this.getNextIdFromPlaylist(currentPlaylistId, options.qs.id)][1]);
+                message.channel.send('**Previous** : ' +
+                currentPlaylistId[this.getPreviousIdFromPlaylist(currentPlaylistId, options.qs.id)][1]);
             }
         });
 
