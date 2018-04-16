@@ -33,8 +33,8 @@ export default class extends Command<BotClient> {
     async autoPlayNext(message: Message): Promise<void> {
         // Do a check to avoid command stacking
         if (
-            !Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
-            Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0 ||
+            (!Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
+            Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0) ||
             (Util.getNestedValue(this._changingTracks, [message.guild.id]) === true &&
              Util.getNestedValue(this._changingTracks, [message.guild.id]))
         ) {
@@ -47,6 +47,7 @@ export default class extends Command<BotClient> {
     clearData(guildId: string): void {
         Util.assignNestedValue(this._currentVidId, [guildId], '');
         Util.assignNestedValue(this._currentPlaylistIds, [guildId], []);
+        Util.assignNestedValue(this._changingTracks, [guildId], false);
     }
 
     // Check if the bot is connected to the same voice channel
@@ -217,7 +218,7 @@ export default class extends Command<BotClient> {
                 return message.channel.send('Nothing is currently playing');
             }
             Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
-            options.qs.part = 'snippet,statistics';
+            options.qs.part = 'snippet';
             if (joinedArgs.toLowerCase() === 'next') {
                 options.qs.id = currentPlaylistId[this.getNextIdFromPlaylist(currentPlaylistId, currentVidId)][0];
             } else {
@@ -233,6 +234,7 @@ export default class extends Command<BotClient> {
                     type: 'video',
                     q: joinedArgs,
                     part: 'snippet',
+                    regionCode: 'GB',
                     maxResults: '1'
                 },
                 json: true
@@ -247,6 +249,8 @@ export default class extends Command<BotClient> {
                         return message.channel.send('Can\'t find any video matching the query');
                     } else {
                         tempMsg.delete();
+                        this.clearData(message.guild.id);
+                        currentPlaylistId = {};
                         Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
                         options.qs.part = 'snippet';
                         options.qs.id = body.items[0].id.videoId;
@@ -295,7 +299,7 @@ export default class extends Command<BotClient> {
                             );
                         });
                 } else {
-                    Util.assignNestedValue(this._currentPlaylistIds, [message.guild.id], []);
+                    Util.assignNestedValue(this._currentPlaylistIds, [message.guild.id], {});
                 }
             }
         }
@@ -311,7 +315,7 @@ export default class extends Command<BotClient> {
         request(options).then(body => {
             message.channel.send('**Now Playing: **' + '- ' + body.items[0].snippet.title + ' -');
             if (
-                Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
+                Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) &&
                 Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length !== 0
             ) {
                 message.channel.send('**Next** : ' +
@@ -335,7 +339,9 @@ export default class extends Command<BotClient> {
                         Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0
                     ) {
                         channel.leave();
-                        message.channel.send('Finished playing!');
+                        if (!Util.getNestedValue(this._changingTracks, [message.guild.id])) {
+                            message.channel.send('Finished playing!');
+                        }
                         return this.clearData(message.guild.id);
                     } else {
                         // This is done so no loop is going to happen. Since leaving a channel
