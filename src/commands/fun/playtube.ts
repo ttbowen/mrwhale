@@ -106,7 +106,7 @@ export default class extends Command<BotClient> {
                 if (playlist.length === 1) {
                     returnIndex = 0;
                     break;
-                } else if (index - 1 <= 0) {
+                } else if (index - 1 < 0) {
                     returnIndex = playlist.length - 1;
                     break;
                 } else {
