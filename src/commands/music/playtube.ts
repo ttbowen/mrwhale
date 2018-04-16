@@ -22,8 +22,8 @@ export default class extends Command<BotClient> {
             name: 'playtube',
             desc: 'play an audio stream from a youtube link',
             usage: '<prefix>playtube <link>/<search query>/<stop>/<info>/<next>/<previous>',
-            group: 'fun',
-            aliases: ['yt', 'radio']
+            group: 'music',
+            aliases: ['yt', 'radio', 'youtube']
         });
         this._currentVidId = {};
         this._currentPlaylistIds = {};
@@ -158,7 +158,9 @@ export default class extends Command<BotClient> {
             },
             json: true
         };
-
+        if (joinedArgs.toLowerCase() === '') {
+            return message.channel.send('No parameter is supplied. You can check it using the help command');
+        }
         if (joinedArgs.toLowerCase() === 'stop') {
             this.clearData(message.guild.id);
             return this.leaveAllChannelsInGuild(message.guild);
