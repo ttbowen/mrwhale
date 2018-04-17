@@ -278,7 +278,6 @@ export default class extends Command<BotClient> {
                          // and get the pure json
                         const errorRegex = /[{]([^]+)/g;
                         const errorParsed = JSON.parse(errorRegex.exec(err)[0]);
-                        console.log(errorParsed);
                         if (errorParsed.error) {
                             if (errorParsed.error.code === +'403') {
                                 return message.channel.send(
