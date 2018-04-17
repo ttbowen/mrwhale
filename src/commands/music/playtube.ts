@@ -287,7 +287,7 @@ export default class extends Command<BotClient> {
                                 return message.channel.send(
                                     'No playlist with that id is found. Is the id correct?'
                                 );
-                            } else {
+                            } else if (errorParsed.error.errors.length > 0) {
                                 return message.channel.send(
                                     errorParsed.error.errors[0].message
                                 );
