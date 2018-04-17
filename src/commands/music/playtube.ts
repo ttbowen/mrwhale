@@ -26,7 +26,8 @@ export default class extends Command<BotClient> {
             desc: 'play an audio stream from a youtube link',
             usage: '<prefix>playtube <link>/<search query>/<stop>/<info>/<next>/<previous>',
             group: 'music',
-            aliases: ['yt', 'radio', 'youtube']
+            aliases: ['yt', 'radio', 'youtube'],
+            guildOnly: true
         });
         this._currentVidId = {};
         this._currentPlaylistIds = {};
@@ -350,7 +351,7 @@ export default class extends Command<BotClient> {
 
         const streamOption = {
             highWaterMark: 3145728, // <-- The amount of preload allowed in bytes
-            quality: 'highestaudio' // <-- Allow streaming audio only even on live video
+            quality: 'highestaudio' // <-- Allow streaming of audio only even on live video
         };
 
         channel
