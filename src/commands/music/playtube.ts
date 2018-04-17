@@ -26,7 +26,8 @@ export default class extends Command<BotClient> {
             desc: 'play an audio stream from a youtube link',
             usage: '<prefix>playtube <link>/<search query>/<stop>/<info>/<next>/<previous>',
             group: 'music',
-            aliases: ['yt', 'radio', 'youtube']
+            aliases: ['yt', 'radio', 'youtube'],
+            guildOnly: true
         });
         this._currentVidId = {};
         this._currentPlaylistIds = {};
@@ -273,6 +274,25 @@ export default class extends Command<BotClient> {
                     })
                     .catch(err => {
                         this.clearData(message.guild.id);
+                         // Remove the header of an error
+                         // and get the pure json
+                        const errorRegex = /[{]([^]+)/g;
+                        const errorParsed = JSON.parse(errorRegex.exec(err)[0]);
+                        if (errorParsed.error) {
+                            if (errorParsed.error.code === +'403') {
+                                return message.channel.send(
+                                    'Playlist is private. Make sure the playlist is public first!'
+                                );
+                            } else if (errorParsed.error.code === +'404') {
+                                return message.channel.send(
+                                    'No playlist with that id is found. Is the id correct?'
+                                );
+                            } else if (errorParsed.error.errors.length > 0) {
+                                return message.channel.send(
+                                    errorParsed.error.errors[0].message
+                                );
+                            }
+                        }
                         return message.channel.send(
                             'Can\'t create playlist array. Error: ' + err
                         );
@@ -348,10 +368,15 @@ export default class extends Command<BotClient> {
 
         const videoUrl = 'htpps://www.youtube.com/watch?v=' + options.qs.id;
 
+        const streamOption = {
+            highWaterMark: 3145728, // <-- The amount of preload allowed in bytes
+            quality: 'highestaudio' // <-- Allow streaming of audio only even on live video
+        };
+
         channel
             .join()
             .then(connection => {
-                const dispatcher = connection.playStream(ytdl(videoUrl));
+                const dispatcher = connection.playStream(ytdl(videoUrl, streamOption));
                 Util.assignNestedValue(this._currentVidId, [message.guild.id], options.qs.id);
                 dispatcher.setVolume(1);
                 dispatcher.on('end', () => {
