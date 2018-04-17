@@ -1,0 +1,4 @@
+{
+  "settings_db_url": "sqlite:db/settings.db",
+  "main_db_url": "sqlite:db/main.db"
+}
