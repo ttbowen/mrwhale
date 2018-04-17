@@ -1,10 +1,10 @@
 import { GuildMember, RichEmbed } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
+import { LevelManager } from '../../client/managers/levelManager';
 import { Database } from '../../database/database';
 import User from '../../database/models/User';
 import UserExpStats from '../../database/models/UserExpStats';
-import { LevelManager } from '../../managers/levelManager';
 import { Player } from '../../types/player';
 
 const { resolve } = Middleware;
