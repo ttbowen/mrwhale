@@ -37,10 +37,10 @@ export default class extends Command<BotClient> {
     async autoPlayNext(message: Message): Promise<void> {
         // Do a check to avoid command stacking
         if (
-            (!Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
-            Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0) ||
+            !Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
+            Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0 ||
             (Util.getNestedValue(this._changingTracks, [message.guild.id]) === true &&
-             Util.getNestedValue(this._changingTracks, [message.guild.id]))
+                Util.getNestedValue(this._changingTracks, [message.guild.id]))
         ) {
             return;
         }
@@ -151,8 +151,8 @@ export default class extends Command<BotClient> {
     async action(message: Message, args: string[]): Promise<any> {
         const joinedArgs = args.join('').replace(/\s/g, '+');
 
-        const videoId = (/[&?]v=([^&\s]+)/).exec(joinedArgs);
-        const videoPlaylistId = (/[&?]list=([^&\s]+)/).exec(joinedArgs);
+        const videoId = /[&?]v=([^&\s]+)/.exec(joinedArgs);
+        const videoPlaylistId = /[&?]list=([^&\s]+)/.exec(joinedArgs);
 
         const currentVidId = Util.getNestedValue(this._currentVidId, [message.guild.id]);
         let currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]);
@@ -171,16 +171,18 @@ export default class extends Command<BotClient> {
             json: true
         };
         if (joinedArgs.toLowerCase() === '') {
-            return message.channel.send('No parameter is supplied. You can check it using the help command');
+            return message.channel.send(
+                'No parameter is supplied. You can check it using the help command'
+            );
         }
         if (joinedArgs.toLowerCase() === 'stop') {
             this.clearData(message.guild.id);
             return this.leaveAllChannelsInGuild(message.guild);
         } else if (message.member.voiceChannel === undefined) {
-            return message.channel.send('You\'re not within any voice channel. Join one first');
+            return message.channel.send("You're not within any voice channel. Join one first");
         } else if (!this.checkConnection(message.member.voiceChannel, message.guild)) {
             const errMsg = [
-                'There\'s already a connected ',
+                "There's already a connected ",
                 'voice channel for this bot! ',
                 'Join that channel first!'
             ];
@@ -216,20 +218,26 @@ export default class extends Command<BotClient> {
                 })
                 .catch(err => {
                     this.clearData(message.guild.id);
-                    return message.channel.send('Can\'t connect to info api. Error: ' + err);
+                    return message.channel.send("Can't connect to info api. Error: " + err);
                 });
         } else if (joinedArgs.toLowerCase() === 'next' || joinedArgs.toLowerCase() === 'previous') {
             if (!currentPlaylistId || currentPlaylistId.length === 0) {
-                return message.channel.send('You didn\'t supply a playlist');
+                return message.channel.send("You didn't supply a playlist");
             } else if (!currentVidId || currentVidId === '') {
                 return message.channel.send('Nothing is currently playing');
             }
             Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
             options.qs.part = 'snippet';
             if (joinedArgs.toLowerCase() === 'next') {
-                options.qs.id = currentPlaylistId[this.getNextIdFromPlaylist(currentPlaylistId, currentVidId)][0];
+                options.qs.id =
+                    currentPlaylistId[
+                        this.getNextIdFromPlaylist(currentPlaylistId, currentVidId)
+                    ][0];
             } else {
-                options.qs.id = currentPlaylistId[this.getPreviousIdFromPlaylist(currentPlaylistId, currentVidId)][0];
+                options.qs.id =
+                    currentPlaylistId[
+                        this.getPreviousIdFromPlaylist(currentPlaylistId, currentVidId)
+                    ][0];
             }
         } else if (videoId !== null || videoPlaylistId !== null) {
             if (videoId !== null) {
@@ -252,21 +260,25 @@ export default class extends Command<BotClient> {
                     .then(body => {
                         if (!body.items || body.items.length === 0) {
                             this.clearData(message.guild.id);
-                            return message.channel.send('Can\'t find any video in the playlist');
+                            return message.channel.send("Can't find any video in the playlist");
                         } else {
                             Util.assignNestedValue(
                                 this._currentPlaylistIds,
                                 [message.guild.id],
                                 this.generatePlaylistArray(body)
                             );
-                            currentPlaylistId = Util.getNestedValue(
-                                this._currentPlaylistIds, [message.guild.id]
-                            );
+                            currentPlaylistId = Util.getNestedValue(this._currentPlaylistIds, [
+                                message.guild.id
+                            ]);
 
                             // If the playlist id isn't null but the video id is,
                             // the first video in the playlist is played
                             if (videoId === null) {
-                                Util.assignNestedValue(this._changingTracks, [message.guild.id], true);
+                                Util.assignNestedValue(
+                                    this._changingTracks,
+                                    [message.guild.id],
+                                    true
+                                );
                                 options.qs.part = 'snippet';
                                 options.qs.id = currentPlaylistId[0][0];
                             }
@@ -274,8 +286,8 @@ export default class extends Command<BotClient> {
                     })
                     .catch(err => {
                         this.clearData(message.guild.id);
-                         // Remove the header of an error
-                         // and get the pure json
+                        // Remove the header of an error
+                        // and get the pure json
                         const errorRegex = /[{]([^]+)/g;
                         const errorParsed = JSON.parse(errorRegex.exec(err)[0]);
                         if (errorParsed.error) {
@@ -288,21 +300,16 @@ export default class extends Command<BotClient> {
                                     'No playlist with that id is found. Is the id correct?'
                                 );
                             } else if (errorParsed.error.errors.length > 0) {
-                                return message.channel.send(
-                                    errorParsed.error.errors[0].message
-                                );
+                                return message.channel.send(errorParsed.error.errors[0].message);
                             }
                         }
-                        return message.channel.send(
-                            'Can\'t create playlist array. Error: ' + err
-                        );
+                        return message.channel.send("Can't create playlist array. Error: " + err);
                     });
             } else {
                 Util.assignNestedValue(this._currentPlaylistIds, [message.guild.id], {});
             }
-        }
-        // Search for a video if none of the other arguments are detected
-        else {
+        } else {
+            // Search for a video if none of the other arguments are detected
             const searchoptions = {
                 url: 'https://www.googleapis.com/youtube/v3/search',
                 qs: {
@@ -316,14 +323,16 @@ export default class extends Command<BotClient> {
                 json: true
             };
 
-            const tempMsg = <Message> await message.channel.send('Searching for a video with that name...');
+            const tempMsg = <Message>await message.channel.send(
+                'Searching for a video with that name...'
+            );
 
             await request(searchoptions)
                 .then(body => {
                     if (!body.items || body.items.length === 0) {
                         tempMsg.delete();
                         this.clearData(message.guild.id);
-                        return message.channel.send('Can\'t find any video matching the query');
+                        return message.channel.send("Can't find any video matching the query");
                     } else {
                         tempMsg.delete();
                         this.clearData(message.guild.id);
@@ -335,14 +344,16 @@ export default class extends Command<BotClient> {
                 })
                 .catch(err => {
                     this.clearData(message.guild.id);
-                    return message.channel.send('Can\'t connect to video search api. Error: ' + err);
+                    return message.channel.send("Can't connect to video search api. Error: " + err);
                 });
         }
 
-        if ((!Util.getNestedValue(this._currentVidId, [message.guild.id]) ||
-            Util.getNestedValue(this._currentVidId, [message.guild.id]) === '') &&
-            options.qs.id === '') {
-             return;
+        if (
+            (!Util.getNestedValue(this._currentVidId, [message.guild.id]) ||
+                Util.getNestedValue(this._currentVidId, [message.guild.id]) === '') &&
+            options.qs.id === ''
+        ) {
+            return;
         }
 
         const channel = message.member.voiceChannel;
@@ -359,10 +370,18 @@ export default class extends Command<BotClient> {
                 Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) &&
                 Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length !== 0
             ) {
-                message.channel.send('**Next** : ' +
-                currentPlaylistId[this.getNextIdFromPlaylist(currentPlaylistId, options.qs.id)][1]);
-                message.channel.send('**Previous** : ' +
-                currentPlaylistId[this.getPreviousIdFromPlaylist(currentPlaylistId, options.qs.id)][1]);
+                message.channel.send(
+                    '**Next** : ' +
+                        currentPlaylistId[
+                            this.getNextIdFromPlaylist(currentPlaylistId, options.qs.id)
+                        ][1]
+                );
+                message.channel.send(
+                    '**Previous** : ' +
+                        currentPlaylistId[
+                            this.getPreviousIdFromPlaylist(currentPlaylistId, options.qs.id)
+                        ][1]
+                );
             }
         });
 
@@ -382,7 +401,8 @@ export default class extends Command<BotClient> {
                 dispatcher.on('end', () => {
                     if (
                         !Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]) ||
-                        Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length === 0
+                        Util.getNestedValue(this._currentPlaylistIds, [message.guild.id]).length ===
+                            0
                     ) {
                         channel.leave();
                         if (!Util.getNestedValue(this._changingTracks, [message.guild.id])) {
@@ -403,7 +423,7 @@ export default class extends Command<BotClient> {
             })
             .catch(err => {
                 this.clearData(message.guild.id);
-                message.channel.send('Can\'t play url. Error: ' + err);
+                message.channel.send("Can't play url. Error: " + err);
             });
     }
 }
