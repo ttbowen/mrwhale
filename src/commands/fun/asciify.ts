@@ -1,8 +1,5 @@
 import { RichEmbed } from 'discord.js';
-import { DataTypeInteger } from 'mrwhale/node_modules/@types/sequelize';
-import { ratelimit } from 'mrwhale/node_modules/yamdbf/bin/command/CommandDecorators';
 import * as request from 'request-promise';
-import { debug, debuglog } from 'util';
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import asciify, * as fontList from '../../data/asciify';
@@ -44,7 +41,7 @@ export default class extends Command<BotClient> {
         }
         if (fontID >= fontList.default.length) {
             return message.channel.send(
-                'Please insert a number lower than ' + fontList.default.length.toString()
+                `Please insert a number lower than ${fontList.default.length.toString()}`
             );
         }
 
@@ -78,7 +75,6 @@ export default class extends Command<BotClient> {
             method: 'GET'
         };
 
-        // return message.channel.send(options.url);
         return request(options).then(asciified => {
             const embed = new RichEmbed();
             embed.setTitle('ASCIIFY');
