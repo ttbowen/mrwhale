@@ -16,20 +16,20 @@ export default class extends Command<BotClient> {
         });
     }
 
-    formatASCII(ogstring: string): string {
-        let newstring = '';
+    private formatAscii(text: string): string {
+        let formattedAscii = '';
         let currentIndex = 0;
         do {
-            if (ogstring[currentIndex] === '\n') {
-                newstring += '\n';
-            } else if (ogstring[currentIndex] === ' ') {
-                newstring += '░';
+            if (text[currentIndex] === '\n') {
+                formattedAscii += '\n';
+            } else if (text[currentIndex] === ' ') {
+                formattedAscii += '░';
             } else {
-                newstring += '▓';
+                formattedAscii += '▓';
             }
             currentIndex++;
-        } while (currentIndex < ogstring.length);
-        return newstring;
+        } while (currentIndex < text.length);
+        return formattedAscii;
     }
 
     async action(message: Message, inputs: string[]): Promise<any> {
@@ -80,7 +80,7 @@ export default class extends Command<BotClient> {
             embed.setTitle('ASCIIFY');
             embed.setURL(options.url);
             embed.setAuthor(message.author.username, message.author.avatarURL);
-            embed.addField('ASCII ART', this.formatASCII(asciified), false);
+            embed.addField('ASCII ART', this.formatAscii(asciified), false);
             message.channel.send({ embed });
         });
     }
