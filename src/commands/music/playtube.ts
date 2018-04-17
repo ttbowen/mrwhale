@@ -274,6 +274,26 @@ export default class extends Command<BotClient> {
                     })
                     .catch(err => {
                         this.clearData(message.guild.id);
+                         // Remove the header of an error
+                         // and get the pure json
+                        const errorRegex = /[{]([^]+)/g;
+                        const errorParsed = JSON.parse(errorRegex.exec(err)[0]);
+                        console.log(errorParsed);
+                        if (errorParsed.error) {
+                            if (errorParsed.error.code === +'403') {
+                                return message.channel.send(
+                                    'Playlist is private. Make sure the playlist is public first!'
+                                );
+                            } else if (errorParsed.error.code === +'404') {
+                                return message.channel.send(
+                                    'No playlist with that id is found. Is the id correct?'
+                                );
+                            } else {
+                                return message.channel.send(
+                                    errorParsed.error.errors[0].message
+                                );
+                            }
+                        }
                         return message.channel.send(
                             'Can\'t create playlist array. Error: ' + err
                         );
