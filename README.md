@@ -1,11 +1,13 @@
 # Mr. Whale
 
-[![Discord](https://discordapp.com/api/guilds/407167968481640449/embed.png)](https://discord.gg/ae3mfBV)
 [![Build Status](https://travis-ci.org/bowenwaregames/mrwhale.svg?branch=master)](https://travis-ci.org/bowenwaregames/mrwhale)
 [![dependencies Status](https://david-dm.org/bowenwaregames/mrwhale/status.svg)](https://david-dm.org/bowenwaregames/mrwhale)
 [![devDependencies Status](https://david-dm.org/bowenwaregames/mrwhale/dev-status.svg)](https://david-dm.org/bowenwaregames/mrwhale?type=dev)
 
-Mr. Whale is a fun general purpose [Discord](https://discordapp.com/) bot.
+Mr. Whale is a fun general purpose [Discord](https://discordapp.com/) bot. Feel free to join the discord server for more information.
+
+[![Join Mr. Whale](https://discordapp.com/api/guilds/407167968481640449/embed.png?style=banner2)](https://discord.gg/ae3mfBV)
+
 ## Features
 
 - Moderation and server management.
