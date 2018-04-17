@@ -348,10 +348,15 @@ export default class extends Command<BotClient> {
 
         const videoUrl = 'htpps://www.youtube.com/watch?v=' + options.qs.id;
 
+        const streamOption = {
+            highWaterMark: 3145728, // <-- The amount of preload allowed in bytes
+            quality: 'highestaudio' // <-- Allow streaming audio only even on live video
+        };
+
         channel
             .join()
             .then(connection => {
-                const dispatcher = connection.playStream(ytdl(videoUrl));
+                const dispatcher = connection.playStream(ytdl(videoUrl, streamOption));
                 Util.assignNestedValue(this._currentVidId, [message.guild.id], options.qs.id);
                 dispatcher.setVolume(1);
                 dispatcher.on('end', () => {
