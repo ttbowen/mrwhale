@@ -11,7 +11,10 @@
     "prettier:write": "prettier --write **/*.{ts,js,json}"
   },
   "lint-staged": {
-    "**/*.{ts,js}": ["npm run prettier:write", "git add"]
+    "**/*.{ts,js}": [
+      "npm run prettier:write",
+      "git add"
+    ]
   },
   "keywords": [],
   "author": "Thomas Bowen",
@@ -34,7 +37,7 @@
     "nodemon": "^1.17.1",
     "prettier": "^1.11.1",
     "sinon": "^4.4.2",
-    "ts-node": "^5.0.1",
+    "ts-node": "^6.0.0",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2"
   },
