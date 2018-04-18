@@ -16,7 +16,8 @@ export default class extends Command<BotClient> {
     async action(message: Message): Promise<any> {
         let index = Math.floor(Math.random() * responses.default.length);
 
-        if (message.content.match(/conchshell/)) {
+        const conchshellMatch = new RegExp(this.aliases.join('|'), 'gi');
+        if (message.content.match(conchshellMatch)) {
             const conchShellOverrides = [`I don't think so.`, `Yes.`, `Try asking again.`, `No.`];
 
             index = Math.floor(Math.random() * conchShellOverrides.length);
