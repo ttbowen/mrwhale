@@ -3,6 +3,8 @@ import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
 import { LevelManager } from './managers/levelManager';
 import { ModerationManager } from './managers/moderationManager';
+import { MusicManager } from './managers/musicManager';
+import { VoiceManager } from './managers/voiceManager';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
@@ -14,6 +16,7 @@ export class BotClient extends Client {
     private readonly _database: Database;
 
     readonly moderation: ModerationManager;
+    readonly musicPlayer: MusicManager;
 
     constructor() {
         super({
@@ -28,6 +31,7 @@ export class BotClient extends Client {
             provider: Providers.SQLiteProvider(db.settings_db_url)
         });
         this.moderation = new ModerationManager(this);
+        this.musicPlayer = new MusicManager(this);
         this._database = Database.instance(db.main_db_url);
         this._level = new LevelManager(this);
     }
