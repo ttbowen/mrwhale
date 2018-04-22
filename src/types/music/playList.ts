@@ -7,9 +7,19 @@ import { Track } from './track';
  */
 export class PlayList {
     private _playList: Collection<string, Track[]>;
+    private _currentTrack: Collection<string, Track>;
 
     constructor() {
         this._playList = new Collection<string, Track[]>();
+        this._currentTrack = new Collection<string, Track>();
+    }
+
+    /**
+     * Get the current playing track.
+     * @param guildId The guild identifer.
+     */
+    currentTrack(guildId: string): Track {
+        return this._currentTrack.get(guildId);
     }
 
     /**
@@ -18,6 +28,7 @@ export class PlayList {
      */
     destroy(guildId: string): void {
         this._playList.delete(guildId);
+        this._currentTrack.delete(guildId);
     }
 
     /**
@@ -54,6 +65,7 @@ export class PlayList {
     next(guildId: string): Track {
         const next: Track = this._playList.get(guildId).shift();
         next.isPlaying = true;
+        this._currentTrack.set(guildId, next);
 
         return next;
     }
