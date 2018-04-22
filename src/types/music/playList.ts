@@ -16,15 +16,23 @@ export class PlayList {
 
     /**
      * Get the current playing track.
-     * @param guildId The guild identifer.
+     * @param guildId The guild identifier.
      */
-    currentTrack(guildId: string): Track {
+    getCurrentTrack(guildId: string): Track {
         return this._currentTrack.get(guildId);
     }
 
     /**
+     * Set the current playing track.
+     * @param guildId The guild identifier.
+     */
+    setCurrentTrack(guildId: string, track: Track): void {
+        this._currentTrack.set(guildId, track);
+    }
+
+    /**
      * Destroy a guild's playlist.
-     * @param guildId The guild identifer.
+     * @param guildId The guild identifier.
      */
     destroy(guildId: string): void {
         this._playList.delete(guildId);
@@ -33,7 +41,7 @@ export class PlayList {
 
     /**
      * Get a guild's playlist.
-     * @param guildId The guild identifer.
+     * @param guildId The guild identifier.
      */
     get(guildId: string): Track[] {
         return this._playList.get(guildId);
@@ -41,7 +49,7 @@ export class PlayList {
 
     /**
      * Check if the guild has a playlist.
-     * @param guildId The guild identifer.
+     * @param guildId The guild identifier.
      */
     exists(guildId: string): boolean {
         return this._playList.has(guildId);
@@ -50,23 +58,21 @@ export class PlayList {
     /**
      * Add a new item to the playlist.
      * or create a new one if none exists.
-     * @param guildId The guild identifer.
+     * @param guildId The guild identifier.
      * @param track The new playlist item.
      */
     add(guildId: string, track: Track): void {
-        if (this._playList.has(guildId)) this._playList.get(guildId).push(track);
-        else this._playList.set(guildId, [track]);
+        if (this._playList.has(guildId)) {
+            this._playList.get(guildId).push(track);
+        } else this._playList.set(guildId, [track]);
     }
 
     /**
      * Play the next track in playlist.
-     * @param guild The guild identifer.
+     * @param guild The guild identifier.
      */
     next(guildId: string): Track {
         const next: Track = this._playList.get(guildId).shift();
-        next.isPlaying = true;
-        this._currentTrack.set(guildId, next);
-
         return next;
     }
 }
