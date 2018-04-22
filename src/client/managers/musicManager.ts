@@ -50,6 +50,7 @@ export class MusicManager {
 
         const dispatcher = options.voice.playStream(ytdl(video.url, streamOption));
         dispatcher.setVolume(this._volume);
+        this.playList.setCurrentTrack(guildId, video);
 
         const title: string = (await this.getVideoInfo(video.url)).title;
         const msg = (await channel.send(`**Now playing** :notes: \`${title}\``)) as Message;
@@ -65,6 +66,11 @@ export class MusicManager {
         this.streamDispatchers.set(guildId, dispatcher);
     }
 
+    /**
+     * Play the next track in the playlist.
+     * @param guildId The guild identifer.
+     * @param options Contains the play options.
+     */
     playNext(guildId: string, options: PlayOptions): void {
         const channel: TextChannel = options.channel;
         const next: Track = this.playList.next(guildId);
@@ -83,6 +89,32 @@ export class MusicManager {
         const guildId: string = connection.channel.guild.id;
         if (this.playList.exists(guildId)) this.playList.destroy(guildId);
         if (this.streamDispatchers.has(guildId)) this.streamDispatchers.get(guildId).end();
+    }
+
+    /**
+     * Pause the currently playing audio.
+     * @param connection The voice connection.
+     */
+    pause(connection: VoiceConnection): void {
+        const guildId: string = connection.channel.guild.id;
+
+        if (this.streamDispatchers.has(guildId)) {
+            const dispatcher: StreamDispatcher = this.streamDispatchers.get(guildId);
+            dispatcher.pause();
+        }
+    }
+
+    /**
+     * Resume the currently playing audio.
+     * @param connection The voice connection.
+     */
+    resume(connection: VoiceConnection): void {
+        const guildId: string = connection.channel.guild.id;
+
+        if (this.streamDispatchers.has(guildId)) {
+            const dispatcher: StreamDispatcher = this.streamDispatchers.get(guildId);
+            dispatcher.resume();
+        }
     }
 
     /**
