@@ -1,8 +1,7 @@
-import { StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
+import { TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 import { BotClient } from '../../client/botClient';
-import { MusicManager } from '../../client/managers/musicManager';
 import { YouTube } from '../../music/YouTube';
 import { Track } from '../../types/music/track';
 
