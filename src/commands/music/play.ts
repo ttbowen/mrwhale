@@ -14,7 +14,7 @@ export default class extends Command<BotClient> {
             usage: '<prefix>play <url>',
             group: 'music',
             guildOnly: true,
-            aliases: ['p']
+            aliases: ['p', 'yt']
         });
     }
 
