@@ -59,13 +59,13 @@ export class MusicManager {
             msg.edit(`**Finished playing** :notes: \`${title}\``);
 
             if (this.playList.exists(guildId) && this.playList.get(guildId).length > 0) {
-                return this.autoPlayNext(guildId, options);
+                return this.playNext(guildId, options);
             } else options.voice.channel.leave();
         });
         this.streamDispatchers.set(guildId, dispatcher);
     }
 
-    private autoPlayNext(guildId: string, options: PlayOptions): void {
+    playNext(guildId: string, options: PlayOptions): void {
         const channel: TextChannel = options.channel;
         const next: Track = this.playList.next(guildId);
 
@@ -81,9 +81,8 @@ export class MusicManager {
      */
     stop(connection: VoiceConnection): void {
         const guildId: string = connection.channel.guild.id;
-        connection.channel.leave();
-        this.streamDispatchers.delete(guildId);
-        this.playList.destroy(guildId);
+        if (this.playList.exists(guildId)) this.playList.destroy(guildId);
+        if (this.streamDispatchers.has(guildId)) this.streamDispatchers.get(guildId).end();
     }
 
     /**
