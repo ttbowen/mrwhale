@@ -1,6 +1,7 @@
-import { RichEmbed, StreamDispatcher, VoiceChannel, VoiceConnection } from 'discord.js';
+import { VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
+import { moderatorOnly } from '../../util/decorators/moderation';
 
 import * as ytdl from 'ytdl-core';
 
@@ -15,6 +16,7 @@ export default class extends Command<BotClient> {
         });
     }
 
+    @moderatorOnly
     async action(message: Message, [video]: [string]): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const connection: VoiceConnection = this.client.musicPlayer.voiceManager.getGuildConnection(
@@ -28,8 +30,6 @@ export default class extends Command<BotClient> {
             this.client.musicPlayer.stop(connection);
 
             return message.channel.send(`:stop_button: Stopping audio stream.`);
-        } else {
-            return message.channel.send('You need to join a voice channel first.');
-        }
+        } else return message.channel.send('You need to join a voice channel first.');
     }
 }
