@@ -9,4 +9,6 @@ export interface Track {
     title: string;
     url: string;
     isPlaying: boolean;
+    author: string;
+    thumbnail: string;
 }

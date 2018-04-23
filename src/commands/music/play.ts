@@ -51,11 +51,13 @@ export default class extends Command<BotClient> {
         };
 
         const track: Track = {
+            author: videoInfo.author.name,
             duration: parseInt(videoInfo.length_seconds, 10),
             requestedBy: message.member,
             title: videoInfo.title,
             url: video,
-            isPlaying: false
+            isPlaying: false,
+            thumbnail: videoInfo.thumbnail_url
         };
 
         if (this.client.musicPlayer.streamDispatchers.has(guildId)) {
