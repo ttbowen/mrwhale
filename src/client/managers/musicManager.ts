@@ -57,6 +57,7 @@ export class MusicManager {
 
         dispatcher.on('end', () => {
             this.streamDispatchers.delete(guildId);
+            this.playList.removeCurrentTrack(guildId);
             msg.edit(`**Finished playing** :notes: \`${title}\``);
 
             if (this.playList.exists(guildId) && this.playList.get(guildId).length > 0) {

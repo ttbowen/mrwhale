@@ -31,6 +31,14 @@ export class PlayList {
     }
 
     /**
+     * Remove the current playing track.
+     * @param guildId The guild identifier.
+     */
+    removeCurrentTrack(guildId: string): void {
+        this._currentTrack.delete(guildId);
+    }
+
+    /**
      * Destroy a guild's playlist.
      * @param guildId The guild identifier.
      */
