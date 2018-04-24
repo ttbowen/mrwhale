@@ -134,7 +134,7 @@ export class HangmanGame {
     /**
      * Start the hangman game.
      */
-    public async start(): Promise<void> {
+    async start(): Promise<void> {
         const dictionary = await HangmanGame.loadWords();
         this._currentWord = dictionary[Math.floor(Math.random() * dictionary.length)];
         this._startTime = Date.now();
