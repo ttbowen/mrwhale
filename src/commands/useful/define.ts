@@ -1,3 +1,4 @@
+import { RichEmbed } from 'discord.js';
 import * as request from 'request-promise';
 import { Client, Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
@@ -29,19 +30,23 @@ export default class extends Command<BotClient> {
         };
 
         return request(options).then(body => {
-            let response = '';
             const defmax = 1500;
             const examplemax = 400;
+            const embed = new RichEmbed();
 
-            if (!body || !body.list || !body.list[0]) response = 'Could not define this.';
+            embed.setTitle(`Result for ${phrase}`);
+            embed.setAuthor(message.author.username, message.author.avatarURL);
+
+            if (!body || !body.list || !body.list[0])
+                return message.channel.send('Could not define this.');
 
             if (body.list[0] && body.list[0].definition)
-                response = `**Definition:**\n${truncate(defmax, body.list[0].definition)}\n\n`;
+                embed.addField('Definition', `${truncate(defmax, body.list[0].definition)}`);
 
             if (body.list[0] && body.list[0].example)
-                response += `**Example:**\n${truncate(examplemax, body.list[0].example)}`;
+                embed.addField('Example', `${truncate(examplemax, body.list[0].example)}`);
 
-            return message.channel.send(response);
+            return message.channel.send({ embed });
         });
     }
 }
