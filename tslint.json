@@ -46,7 +46,7 @@
     "no-unsafe-finally": true,
     "one-line": [true, "check-open-brace", "check-whitespace"],
     "max-line-length": [true, 120],
-    "quotemark": [true, "single"],
+    "quotemark": [true, "avoid-escape", "single"],
     "semicolon": [true, "always"],
     "triple-equals": [true, "allow-null-check"],
     "prefer-const": true,

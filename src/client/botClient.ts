@@ -1,8 +1,10 @@
 import { GuildMember, User } from 'discord.js';
 import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
-import { LevelManager } from '../managers/levelManager';
-import { ModerationManager } from '../managers/moderationManager';
+import { LevelManager } from './managers/levelManager';
+import { ModerationManager } from './managers/moderationManager';
+import { MusicManager } from './managers/musicManager';
+import { VoiceManager } from './managers/voiceManager';
 const { on, once } = ListenerUtil;
 
 const config = require('../../config.json');
@@ -10,17 +12,11 @@ const db = require('../../db.json');
 const path = require('path');
 
 export class BotClient extends Client {
-    private _moderation: ModerationManager;
-    private _levelManager: LevelManager;
-    private _database: Database;
+    private readonly _level: LevelManager;
+    private readonly _database: Database;
 
-    get moderation(): ModerationManager {
-        return this._moderation;
-    }
-
-    get database(): Database {
-        return this._database;
-    }
+    readonly moderation: ModerationManager;
+    readonly musicPlayer: MusicManager;
 
     constructor() {
         super({
@@ -34,23 +30,25 @@ export class BotClient extends Client {
             pause: true,
             provider: Providers.SQLiteProvider(db.settings_db_url)
         });
+        this.moderation = new ModerationManager(this);
+        this.musicPlayer = new MusicManager(this);
         this._database = Database.instance(db.main_db_url);
+        this._level = new LevelManager(this);
     }
 
     @once('pause')
     private async _onPause(): Promise<void> {
         await this.setDefaultSetting('prefix', config.default_prefix);
         await this.setDefaultSetting('levels', true);
-        await this.storage.set('youtube_api', config.youtube_api);
         await this.storage.set('google_api', config.google_api);
+        await this.storage.set('google_custom_search_key', config.google_custom_search_key);
+        await this.storage.set('youtube_api', config.youtube_api);
         this.continue();
     }
 
     @once('clientReady')
     private async _onClientReady(): Promise<void> {
         await this._database.init();
-        this._moderation = new ModerationManager(this);
-        this._levelManager = new LevelManager(this);
     }
 
     @on('userUpdate')
