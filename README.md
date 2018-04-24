@@ -11,6 +11,7 @@ Pull requests are also welcome. If you find any issues please open a new issue [
 - Moderation and server management.
 - Server and global user levelling and ranking.
 - Fun commands such as 8ball, choose, meme, asciify and much more!
+- Play music/audio from YouTube.
 
 ## Installation
 
