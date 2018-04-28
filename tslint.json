@@ -12,7 +12,7 @@
     "no-shadowed-variable": true,
     "no-unnecessary-initializer": true,
     "no-misused-new": true,
-    "no-magic-numbers": true,
+    "no-magic-numbers": false,
     "radix": true,
     "no-unused-variable": [
       true,
@@ -80,9 +80,7 @@
       "check-type"
     ]
   },
-  "rulesDirectory": [
-    "tslint-no-unused-expression-chai"
-  ],
+  "rulesDirectory": ["tslint-no-unused-expression-chai"],
   "jsRules": {
     "triple-equals": [true, "allow-null-check"]
   },
