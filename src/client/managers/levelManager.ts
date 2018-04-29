@@ -52,7 +52,10 @@ export class LevelManager {
     private async _onMessage(message: Message): Promise<any> {
         if (message.channel.type === 'dm') return;
 
+        if (!await message.guild.storage) return;
+
         const enabled = await message.guild.storage.settings.get('levels');
+
         if (message.author.id === this.client.user.id || message.author.bot || !enabled) return;
 
         const timeForExp = 60000;

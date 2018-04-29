@@ -1,5 +1,5 @@
-import { GuildMember, User } from 'discord.js';
-import { Client, ListenerUtil, LogLevel, Providers } from 'yamdbf';
+import { GuildChannel, GuildMember, RichEmbed, TextChannel, User } from 'discord.js';
+import { Client, Guild, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
 import { LevelManager } from './managers/levelManager';
 import { ModerationManager } from './managers/moderationManager';
@@ -49,6 +49,28 @@ export class BotClient extends Client {
     @once('clientReady')
     private async _onClientReady(): Promise<void> {
         await this._database.init();
+    }
+
+    @on('guildCreate')
+    private async _onGuildCreate(guild: Guild): Promise<void> {
+        const prefix: string = guild.storage
+            ? await guild.storage.settings.get('prefix')
+            : config.default_prefix;
+        const setprefix = `To change my prefix run \`${prefix}setprefix <prefix>\``;
+        const help = `To get started run \`${prefix}help\`.\n\n${setprefix}`;
+
+        const embed = new RichEmbed();
+        embed.setThumbnail(this.user.avatarURL);
+        embed.setColor(7911109);
+        embed.setDescription(
+            `Hello, my name is **${this.user.username}**. Thank you for inviting me!\n\n${help}`
+        );
+
+        const defaultChannel: GuildChannel = guild.channels.find(c =>
+            c.permissionsFor(guild.me).has('SEND_MESSAGES')
+        );
+        const channelToMessage: TextChannel = this.channels.get(defaultChannel.id) as TextChannel;
+        channelToMessage.send({ embed });
     }
 
     @on('userUpdate')
