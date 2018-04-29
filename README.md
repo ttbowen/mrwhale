@@ -18,6 +18,8 @@ Pull requests are also welcome. If you find any issues please open a new issue [
 - Install [NodeJS](https://nodejs.org/en/) v8.9.3 or newer.
 - Install [Python 2.7.14](https://www.python.org/downloads/)
 - Install [SQLite](https://www.sqlite.org/index.html)
+- Make sure you have a C++ compiler installed for [node-gyp](https://github.com/nodejs/node-gyp). For Windows you can run `npm install -g windows-build-tools` to install the Visual C++ build tools. or install them from [here](http://landinghub.visualstudio.com/visual-cpp-build-tools). Check npm for more information about node-gyp and how to setup.
+- Install [ffmpeg](https://ffmpeg.org/)
 - Run `npm install` to install dependencies.
 - Run `npm run build` to build source.
 
