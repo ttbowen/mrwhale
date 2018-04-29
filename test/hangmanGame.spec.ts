@@ -68,7 +68,7 @@ describe('HangmanGame', () => {
     });
 
     describe('guess', () => {
-        it('should return the correct result', async () => {
+        it('should return GuessResult.Correct with the correct letter', async () => {
             const game = new HangmanGame({
                 lives: 3,
                 ownerId: '1245'
@@ -76,8 +76,51 @@ describe('HangmanGame', () => {
             await game.start();
             const currentWord: string = game.currentWord;
 
-            expect(game.guess(currentWord[0])).to.equal(GuessResult.Correct);
-            expect(game.guess('z')).to.equal(GuessResult.Incorrect);
+            const result: GuessResult = game.guess(game.currentWord[0]);
+
+            expect(result).to.equal(GuessResult.Correct);
+        });
+
+        it('should return GuessResult.Incorrect with the incorrect letter', async () => {
+            const game = new HangmanGame({
+                lives: 3,
+                ownerId: '1245'
+            });
+            await game.start();
+            const currentWord: string = game.currentWord;
+            const incorrectLetter = 'z';
+
+            const result: GuessResult = game.guess(incorrectLetter);
+
+            expect(result).to.equal(GuessResult.Incorrect);
+        });
+
+        it('should return GuessResult.Invalid when an invalid letter is passed', async () => {
+            const game = new HangmanGame({
+                lives: 3,
+                ownerId: '1245'
+            });
+            await game.start();
+            const currentWord: string = game.currentWord;
+            const invalidChars = '@#*';
+
+            expect(game.guess(invalidChars[0])).to.equal(GuessResult.Invalid);
+            expect(game.guess(invalidChars[1])).to.equal(GuessResult.Invalid);
+            expect(game.guess(invalidChars[2])).to.equal(GuessResult.Invalid);
+        });
+
+        it('should return GuessResult.Guessed when letter has already been guessed', async () => {
+            const game = new HangmanGame({
+                lives: 3,
+                ownerId: '1245'
+            });
+            await game.start();
+            const currentWord: string = game.currentWord;
+
+            game.guess('a');
+            const guess: GuessResult = game.guess('a');
+
+            expect(guess).to.equal(GuessResult.Guessed);
         });
     });
 });
