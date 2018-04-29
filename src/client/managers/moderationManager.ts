@@ -92,8 +92,9 @@ export class ModerationManager {
      */
     async error(message: Message): Promise<Message | Message[]> {
         const settings: GuildSettings = await message.guild.storage.settings;
-        const hasModRole = await message.guild.storage.settings.exists('modrole');
-        const modRoleName = hasModRole
+        const hasModRole: boolean = await message.guild.storage.settings.exists('modrole');
+        const prefix: string = await this.client.getPrefix(message.guild);
+        const modRoleName: string = hasModRole
             ? `\`${message.guild.roles.get(await settings.get('modrole')).name}\``
             : 'mod';
 
@@ -101,7 +102,9 @@ export class ModerationManager {
             return await message.channel.send('Error: Command cannot be called from DM.');
 
         if (!await this.hasSetModRole(message.guild))
-            return message.channel.send('Error: This guild has no mod role set.');
+            return message.channel.send(
+                `Error: This guild has no mod role set. Use \`${prefix}setup modrole <role>\` to set one`
+            );
 
         if (!await this.hasModRole(message.member))
             return message.channel.send(
