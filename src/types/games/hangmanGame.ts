@@ -42,6 +42,18 @@ export class HangmanGame {
         return this._lettersGuessed;
     }
 
+    get lettersMatched(): string {
+        return this._lettersMatched;
+    }
+
+    get lettersMatchedNum(): number {
+        return this._numLettersMatched;
+    }
+
+    get ownerId(): string {
+        return this._ownerId;
+    }
+
     /**
      * Creates an instance of {@link HangmanGame}.
      * @param options The game options.
@@ -75,27 +87,30 @@ export class HangmanGame {
      */
     guess(letter: string): GuessResult {
         letter = letter.trim().toLowerCase();
+        const availableLetters = 'abcdefghijklmnopqrstuvwxyz';
 
-        if (
-            (this._lettersGuessed && this._lettersGuessed.indexOf(letter) > -1) ||
-            (this._lettersMatched && this._lettersMatched.indexOf(letter) > -1)
-        ) {
-            return GuessResult.Correct;
-        } else if (this._currentWord.indexOf(letter) > -1) {
-            for (let i = 0; i < this._currentWord.length; i++) {
-                if (this._currentWord.charAt(i) === letter) {
-                    this._numLettersMatched++;
+        if (availableLetters.indexOf(letter) > -1) {
+            if (
+                (this._lettersGuessed && this._lettersGuessed.indexOf(letter) > -1) ||
+                (this._lettersMatched && this._lettersMatched.indexOf(letter) > -1)
+            ) {
+                return GuessResult.Guessed;
+            } else if (this._currentWord.indexOf(letter) > -1) {
+                for (let i = 0; i < this._currentWord.length; i++) {
+                    if (this._currentWord.charAt(i) === letter) {
+                        this._numLettersMatched++;
+                    }
                 }
+                this._lettersMatched += letter;
+
+                return GuessResult.Correct;
+            } else {
+                this._lettersGuessed += letter;
+                this._lives--;
+
+                return GuessResult.Incorrect;
             }
-            this._lettersMatched += letter;
-
-            return GuessResult.Correct;
-        } else {
-            this._lettersGuessed += letter;
-            this._lives--;
-
-            return GuessResult.Incorrect;
-        }
+        } else return GuessResult.Invalid;
     }
 
     /**

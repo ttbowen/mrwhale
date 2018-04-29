@@ -3,5 +3,7 @@
  */
 export enum GuessResult {
     Correct,
-    Incorrect
+    Incorrect,
+    Invalid,
+    Guessed
 }
