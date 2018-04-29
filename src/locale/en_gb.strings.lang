@@ -7,3 +7,43 @@
 **You have been kicked from {{ guildName }}.**
 
 **Reason:** {{ reason }}
+
+[CMD_HELP_COMMAND_LIST]
+Available commands: (Commands marked with `*` are server-only)
+```ldif
+{{ commandList }}
+```Use `{{ usage }}` or `{{ mentionUsage }}` for more info
+
+[CMD_HELP_UNKNOWN_COMMAND]
+A command by that name could not be found or you do
+not have permission to view it.
+
+[CMD_HELP_SERVERONLY]
+[Server Only]
+
+[CMD_HELP_OWNERONLY]
+[Owner Only]
+
+[CMD_HELP_ALIASES]
+## 'Aliases: foo, bar' | 'Alias: foo'
+{{! args.aliases.split(',').length > 1 ? 'Aliases' : 'Alias' !}}: {{ aliases }}
+
+[CMD_HELP_CODEBLOCK]
+```ldif
+{{ serverOnly ?}}
+{{ ownerOnly ?}}
+Command: {{ commandName }}
+Description: {{ desc }}
+{{ aliasText ?}}
+Usage: {{ usage }}
+{{ info ?}}
+```
+
+[CMD_HELP_REPLY_CMD]
+Sent you a DM with command help information.
+
+[CMD_HELP_REPLY_ALL]
+Sent you a DM with a list of commands.
+
+[CMD_HELP_REPLY_FAIL]
+Failed to DM help information. Do you have DMs blocked?
