@@ -1,53 +1,45 @@
-import { Sequelize } from 'sequelize-typescript';
+import 'reflect-metadata';
+import { createConnection, Connection } from 'typeorm';
 import { logger, Logger } from 'yamdbf';
 
 /**
- * Manages the sequelize connection to the main database.
+ * Manages the typeorm connection.
  */
 export class Database {
     private static _instance: Database;
-    private db: Sequelize;
-    @logger private readonly _logger: Logger;
+    private connection: Connection;
+    @logger private readonly logger: Logger;
 
-    private constructor(private url: string) {
+    private constructor() {
         if (Database._instance) throw new Error('Cannot create multiple instances of Database.');
-
         Database._instance = this;
-
-        this.db = new Sequelize(this.url);
-        this.db.addModels([`${__dirname}/models`]);
     }
 
     /**
-     * Get the sequelize instance.
+     * Get the typeorm connection.
      */
-    static get db(): Sequelize {
-        return Database.instance().db;
+    static get connection(): Connection {
+        return Database.instance().connection;
     }
 
     /**
      * Returns the {@link Database} instance
-     * containing the sequelize connection.
-     * @param url The database url.
+     * containing the typeorm connection.
      */
-    static instance(url?: string): Database {
-        if (!url && !Database._instance)
-            throw new Error('A url is required the first time the database is accessed.');
+    static instance(): Database {
         if (this._instance) return this._instance;
-
-        return new Database(url);
+        return new Database();
     }
 
     /**
-     * Authenticate the connection and sync database.
+     * Initialise the database connection.
      */
     async init(): Promise<void> {
         try {
-            await this.db.authenticate();
+            this.connection = await createConnection();
         } catch (err) {
-            await this._logger.error(`Failed to connect to database ${err}`);
+            await this.logger.error(`Failed to connect to database. Error: ${err}`);
             process.exit();
         }
-        await this.db.sync();
     }
 }
