@@ -5,15 +5,14 @@ import { LevelManager } from './managers/levelManager';
 import { ModerationManager } from './managers/moderationManager';
 import { MusicManager } from './managers/musicManager';
 import { VoiceManager } from './managers/voiceManager';
-const { on, once } = ListenerUtil;
 
+const { on, once } = ListenerUtil;
 const config = require('../../config.json');
 const db = require('../../db.json');
 const path = require('path');
 
 export class BotClient extends Client {
     private readonly _level: LevelManager;
-    private readonly _database: Database;
 
     readonly moderation: ModerationManager;
     readonly musicPlayer: MusicManager;
@@ -32,7 +31,6 @@ export class BotClient extends Client {
         });
         this.moderation = new ModerationManager(this);
         this.musicPlayer = new MusicManager(this);
-        this._database = Database.instance(db.main_db_url);
         this._level = new LevelManager(this);
     }
 
@@ -48,7 +46,7 @@ export class BotClient extends Client {
 
     @once('clientReady')
     private async _onClientReady(): Promise<void> {
-        await this._database.init();
+        await Database.instance().init();
     }
 
     @on('guildCreate')
@@ -75,13 +73,11 @@ export class BotClient extends Client {
 
     @on('userUpdate')
     private async _onUserUpdate(oldUser: User, newUser: User): Promise<void> {
-        Database.db.models.User.update(
-            {
-                username: newUser.username,
-                avatarUrl: newUser.avatarURL,
-                discriminator: newUser.discriminator
-            },
-            { where: { id: newUser.id } }
-        );
+        Database.connection.getRepository(User).save({
+            id: newUser.id,
+            username: newUser.username,
+            avatarUrl: newUser.avatarURL,
+            discriminator: newUser.discriminator
+        });
     }
 }
