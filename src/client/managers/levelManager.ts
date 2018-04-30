@@ -1,8 +1,10 @@
+import { GuildMember } from 'discord.js';
 import { ListenerUtil, Message, Util } from 'yamdbf';
 import { Database } from '../../database/database';
-import User from '../../database/models/User';
-import UserExpStats from '../../database/models/UserExpStats';
+import { User } from '../../entity/user';
+import { UserExpStats } from '../../entity/userExpStats';
 import { BotClient } from '../botClient';
+
 const { on, once, registerListeners } = ListenerUtil;
 
 /**
@@ -11,6 +13,10 @@ const { on, once, registerListeners } = ListenerUtil;
 export class LevelManager {
     private _lastMessages: { [guild: string]: { [user: string]: number } };
 
+    /**
+     * Creates an instance of {@link LevelManager}.
+     * @param client The bot client.
+     */
     constructor(private client: BotClient) {
         this._lastMessages = {};
         registerListeners(this.client, this);
@@ -44,71 +50,82 @@ export class LevelManager {
         return level;
     }
 
-    private getRandomInt(min: number, max: number): number {
+    private getRandomExp(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    private async getPlayer(member: GuildMember): Promise<User> {
+        let player: User = await Database.connection.getRepository(User).findOne({ id: member.id });
+
+        if (!player) {
+            player = new User();
+            player.id = member.id;
+            player.discriminator = member.user.discriminator;
+            player.avatarUrl = member.user.avatarURL;
+            player.username = member.user.username;
+            player.totalExp = 0;
+        }
+        return player;
+    }
+
+    private isTimeForExp(guildId: string, userId: string): boolean {
+        const timeForExp = 6e4;
+        const last = Util.getNestedValue(this._lastMessages, [guildId, userId]) || -Infinity;
+        return Date.now() - last >= timeForExp;
+    }
+
+    private async getPlayerStats(member: GuildMember): Promise<UserExpStats> {
+        let playerStats: UserExpStats = await Database.connection
+            .getRepository(UserExpStats)
+            .findOne({ guildId: member.guild.id, userId: member.id });
+
+        if (!playerStats) {
+            playerStats = new UserExpStats();
+            playerStats.guildId = member.guild.id;
+            playerStats.userId = member.id;
+            playerStats.exp = 0;
+        }
+        return playerStats;
     }
 
     @on('message')
     private async _onMessage(message: Message): Promise<any> {
         if (message.channel.type === 'dm') return;
 
-        if (!await message.guild.storage) return;
+        const timeForExp: boolean = this.isTimeForExp(message.guild.id, message.author.id);
+        const enabled: boolean = (await message.guild.storage)
+            ? await message.guild.storage.settings.get('levels')
+            : true;
 
-        const enabled = await message.guild.storage.settings.get('levels');
+        if (message.author.bot || !enabled || !timeForExp) return;
 
-        if (message.author.id === this.client.user.id || message.author.bot || !enabled) return;
+        Util.assignNestedValue(
+            this._lastMessages,
+            [message.guild.id, message.author.id],
+            Date.now()
+        );
 
-        const timeForExp = 60000;
-        const last =
-            Util.getNestedValue(this._lastMessages, [message.guild.id, message.author.id]) ||
-            -Infinity;
+        const expGain: number = this.getRandomExp(5, 10);
+        try {
+            const user: User = await this.getPlayer(message.member);
+            user.totalExp += expGain;
+            user.expLastUpdated = new Date();
+            Database.connection.getRepository(User).save(user);
 
-        if (Date.now() - last >= timeForExp) {
-            Util.assignNestedValue(
-                this._lastMessages,
-                [message.guild.id, message.author.id],
-                Date.now()
-            );
-            const min = 5;
-            const max = 10;
-            const expGain = this.getRandomInt(min, max);
+            const userStats: UserExpStats = await this.getPlayerStats(message.member);
+            const level: number = LevelManager.getLevelFromExp(userStats.exp);
 
-            const user = await Database.db.models.User.findOrCreate({
-                where: { id: message.author.id },
-                defaults: {
-                    id: message.author.id,
-                    username: message.author.username,
-                    discriminator: message.author.discriminator,
-                    avatarUrl: message.author.avatarURL,
-                    totalExp: 0,
-                    expLastUpdated: null
-                }
-            });
+            userStats.exp += expGain;
+            Database.connection.getRepository(UserExpStats).save(userStats);
 
-            user[0].totalExp += expGain;
-            user[0].save();
+            const newLevel: number = LevelManager.getLevelFromExp(userStats.exp);
 
-            const userExpStats = await Database.db.models.UserExpStats.findOrCreate({
-                where: { userId: message.author.id, guildId: message.guild.id },
-                defaults: {
-                    userId: message.author.id,
-                    guildId: message.guild.id,
-                    exp: 0,
-                    lastLevelUp: null
-                }
-            });
-            const level = LevelManager.getLevelFromExp(userExpStats[0].exp);
-            userExpStats[0].exp += expGain;
-            userExpStats[0].save();
-
-            const newLevel = LevelManager.getLevelFromExp(userExpStats[0].exp);
-
-            if (newLevel !== level) {
-                userExpStats[0].lastLevelUp = new Date();
-                userExpStats[0].save();
+            if (newLevel > level) {
+                userStats.lastLevelUp = new Date();
+                Database.connection.getRepository(UserExpStats).save(userStats);
 
                 return message.reply(`Congrats. You just advanced to **Level ${newLevel}**!!`);
             }
-        }
+        } catch {}
     }
 }
