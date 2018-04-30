@@ -3,8 +3,8 @@ import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import { LevelManager } from '../../client/managers/levelManager';
 import { Database } from '../../database/database';
-import User from '../../database/models/User';
-import UserExpStats from '../../database/models/UserExpStats';
+import { User } from '../../entity/user';
+import { UserExpStats } from '../../entity/userExpStats';
 import { Player } from '../../types/player';
 
 const { resolve } = Middleware;
@@ -33,13 +33,15 @@ export default class extends Command<BotClient> {
             if (!member) userId = message.author.id;
             else userId = member.id;
 
-            const userStats: UserExpStats = await Database.db.models.UserExpStats.findOne({
-                where: { guildId: guildId, userId: userId }
-            });
-            const players: UserExpStats[] = await Database.db.models.UserExpStats.findAll({
-                where: { guildId: guildId }
-            });
-            const level = LevelManager.getLevelFromExp(userStats.exp);
+            const userStats: UserExpStats = await Database.connection
+                .getRepository(UserExpStats)
+                .findOne({ guildId: guildId, userId: userId });
+
+            const players: UserExpStats[] = await Database.connection
+                .getRepository(UserExpStats)
+                .find({ guildId: guildId });
+
+            const level: number = LevelManager.getLevelFromExp(userStats.exp);
 
             let xp = 0;
             for (let i = 0; i < level; i++) {
@@ -55,9 +57,9 @@ export default class extends Command<BotClient> {
                 rank: playerSorted.findIndex(p => p.userId === userId) + 1
             };
 
-            const user: User = await Database.db.models.User.findOne({
-                where: { id: userId }
-            });
+            const user: User = await Database.connection
+                .getRepository(User)
+                .findOne({ id: userId });
 
             const colour = 7911109;
             const embed = new RichEmbed()
