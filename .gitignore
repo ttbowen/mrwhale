@@ -33,6 +33,8 @@ bower_components
 build/Release
 
 # Dependency directories
+.idea/
+.vscode/
 node_modules/
 jspm_packages/
 
@@ -61,7 +63,10 @@ typings/
 .next
 
 # compiled output
-dist
+dist/
+build/
+tmp/
+temp/
 
 # databases
 db
