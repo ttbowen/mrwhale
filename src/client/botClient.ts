@@ -1,6 +1,7 @@
 import { GuildChannel, GuildMember, RichEmbed, TextChannel, User } from 'discord.js';
 import { Client, Guild, ListenerUtil, LogLevel, Providers } from 'yamdbf';
 import { Database } from '../database/database';
+import { User as BotUser } from '../entity/user';
 import { LevelManager } from './managers/levelManager';
 import { ModerationManager } from './managers/moderationManager';
 import { MusicManager } from './managers/musicManager';
@@ -73,7 +74,7 @@ export class BotClient extends Client {
 
     @on('userUpdate')
     private async _onUserUpdate(oldUser: User, newUser: User): Promise<void> {
-        Database.connection.getRepository(User).save({
+        Database.connection.getRepository(BotUser).save({
             id: newUser.id,
             username: newUser.username,
             avatarUrl: newUser.avatarURL,
