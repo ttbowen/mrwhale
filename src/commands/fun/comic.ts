@@ -1,5 +1,5 @@
 import { Client, Command, Message } from 'yamdbf';
-import { BotClient } from '../../client/BotClient';
+import { BotClient } from '../../client/botClient';
 
 import * as bluebird from 'bluebird';
 import * as cheerio from 'cheerio';
