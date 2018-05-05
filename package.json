@@ -4,8 +4,9 @@
   "description": "This is a fun chatbot for discord.",
   "scripts": {
     "start": "npm run build && node ./dist/bot.js",
+    "start:dev": "npm run build:dev && node ./dist/bot.js",
     "build": "gulp",
-    "dev": "gulp watch",
+    "build:dev": "gulp watch",
     "test": "mocha --require ts-node/register ./test/*.spec.ts",
     "lint": "tslint src/**/*.ts",
     "lint:fix": "tslint --fix src/**/*.ts",
