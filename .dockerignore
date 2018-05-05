@@ -1,2 +1,9 @@
-node_modules
+.git/
+node_modules/
 npm-debug.log
+
+config.json
+db.json
+
+dist/
+db/
