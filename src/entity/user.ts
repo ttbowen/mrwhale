@@ -6,6 +6,7 @@ export class User {
     @Column() username: string;
     @Column() discriminator: string;
     @Column() avatarUrl: string;
-    @Column() totalExp: number;
+    @Column({ default: 0 })
+    totalExp: number;
     @Column() expLastUpdated: Date;
 }
