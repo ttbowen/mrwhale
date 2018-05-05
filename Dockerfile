@@ -1,15 +1,23 @@
-FROM node:8
+FROM alpine:edge
+
+# Install nodejs and npm
+RUN apk add --update nodejs nodejs-npm
 
 # Create app directory
 WORKDIR /usr/src/mrwhale
 
-# Install app dependencies
 COPY package*.json ./
+
+# Install dependencies 
+RUN apk add --update --no-cache \
+    alpine-sdk \
+    sqlite \
+    python2 \
+    ffmpeg
 
 RUN npm install
 
 # Bundle app source
 COPY . .
 
-EXPOSE 8080
 CMD [ "npm", "start" ]
