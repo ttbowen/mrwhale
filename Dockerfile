@@ -15,6 +15,8 @@ RUN apk add --update --no-cache \
     python2 \
     ffmpeg
 
+RUN mkdir db
+
 RUN npm install
 
 # Bundle app source
