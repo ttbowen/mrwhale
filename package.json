@@ -19,7 +19,11 @@
       "git add"
     ]
   },
-  "keywords": [],
+  "keywords": ["whale", "discord", "bot"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bowenwaregames/mrwhale.git"
+  },
   "author": "Thomas Bowen",
   "license": "MIT",
   "devDependencies": {
