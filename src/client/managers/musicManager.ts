@@ -22,17 +22,31 @@ export class MusicManager {
     readonly streamDispatchers: Collection<string, StreamDispatcher>;
     readonly playList: PlayList;
 
-    private _volume: number;
-
     /**
      * Creates an instance of {@link MusicManager}.
      * @param client The bot client.
      */
     constructor(private client: BotClient) {
-        this._volume = 1;
         this.voiceManager = new VoiceManager(this.client);
         this.streamDispatchers = new Collection<string, StreamDispatcher>();
         this.playList = new PlayList();
+    }
+
+    /**
+     * Set the stream volume.
+     * @param guildId The guild to set the volume for.
+     * @param volume The volume percentage.
+     */
+    setVolume(guildId: string, volume: number): void {
+        this.streamDispatchers.get(guildId).setVolume(Math.max(0, Math.min(1, volume / 100)));
+    }
+
+    /**
+     * Get the stream volume.
+     * @param guildId The guild to get the volume for.
+     */
+    getVolume(guildId: string): number {
+        return Math.floor(this.streamDispatchers.get(guildId).volume * 100);
     }
 
     /**
@@ -49,7 +63,7 @@ export class MusicManager {
         };
 
         const dispatcher = options.voice.playStream(ytdl(video.url, streamOption));
-        dispatcher.setVolume(this._volume);
+        dispatcher.setVolume(0.5);
         this.playList.setCurrentTrack(guildId, video);
 
         const title: string = (await this.getVideoInfo(video.url)).title;
