@@ -7,7 +7,7 @@
     "start:dev": "npm run build:dev && node ./dist/bot.js",
     "build": "gulp",
     "build:dev": "gulp watch",
-    "test": "mocha --require ts-node/register ./test/*.spec.ts",
+    "test": "mocha --require ts-node/register ./test/**/*.spec.ts",
     "lint": "tslint src/**/*.ts",
     "lint:fix": "tslint --fix src/**/*.ts",
     "precommit": "lint-staged && npm run lint",
