@@ -19,7 +19,11 @@
       "git add"
     ]
   },
-  "keywords": ["whale", "discord", "bot"],
+  "keywords": [
+    "whale",
+    "discord",
+    "bot"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bowenwaregames/mrwhale.git"
@@ -34,6 +38,7 @@
     "@types/request-promise": "^4.1.41",
     "@types/sequelize": "^4.27.10",
     "@types/sinon": "^4.3.0",
+    "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
@@ -47,6 +52,7 @@
     "nodemon": "^1.17.1",
     "prettier": "^1.11.1",
     "sinon": "^5.0.3",
+    "sinon-chai": "^3.0.0",
     "ts-node": "^6.0.0",
     "tslint": "^5.9.1",
     "tslint-no-unused-expression-chai": "^0.1.3",
