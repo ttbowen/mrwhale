@@ -26,9 +26,8 @@ export default class extends Command<BotClient> {
                 return message.channel.send('You must be in the same channel first.');
 
             try {
-                this.client.musicPlayer.voiceManager
-                    .getGuildConnection(message.guild)
-                    .channel.leave();
+                this.client.musicPlayer.stop(connection);
+                connection.channel.leave();
             } catch {
                 message.channel.send('Could not leave this voice channel.');
             }
