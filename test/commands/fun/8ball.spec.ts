@@ -14,23 +14,31 @@ const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('8ball', () => {
-    const cmd: command.default = new command.default();
+    let cmd: command.default;
+    let sandbox: sinon.SinonSandbox;
+
+    before(() => {
+        cmd = new command.default();
+        sandbox = sinon.createSandbox();
+        sandbox.stub(Math, 'random').callsFake(() => 0.09121145093071314);
+    });
+
+    after(() => sandbox.restore());
 
     it('should respond with one of the predefined answers when called', () => {
         const message: Message = new Message(textChannelStub, null, null);
         message.content = '8ball Is this a good test?';
-        sinon.stub(Math, 'random').returns(0);
 
         cmd.action(message);
 
-        expect(message.channel.send).calledWith(`:8ball: ${responses.default[0]}`);
+        expect(message.channel.send).calledWith(`:8ball: ${responses.default[3]}`);
     });
 
     it('should respond with correct responses with specific questions', () => {
         const firstMsg: Message = new Message(textChannelStub, null, null);
         const secondMsg: Message = new Message(textChannelStub, null, null);
         firstMsg.content = 'magicconch Will I ever get married?';
-        secondMsg.content = 'magicconch What should we do to get out of the kelp forest.';
+        secondMsg.content = 'magicconch What should we do to get out of the kelp forest?';
 
         cmd.action(firstMsg);
         cmd.action(secondMsg);
@@ -41,7 +49,7 @@ describe('8ball', () => {
 
     it('should respond with conchshell overrides when called with aliases', () => {
         const message: Message = new Message(textChannelStub, null, null);
-        message.content = 'conchshell Is this a good test.';
+        message.content = 'conchshell Is this a good test?';
 
         cmd.action(message);
 
