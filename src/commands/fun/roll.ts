@@ -7,27 +7,32 @@ export default class extends Command<BotClient> {
         super({
             name: 'roll',
             desc: 'Roll one or multiple dice.',
-            usage: '<prefix>roll [n sides] or [n dice] d[n sides], [n dice] d[n sides] ...',
+            usage: '<prefix>roll [n sides] or [n dice] d[n sides]',
             group: 'fun',
             argOpts: { separator: ',' }
         });
     }
 
     async action(message: Message, args: string[]): Promise<any> {
-        if (!args || args.length < 1) return message.channel.send(`You rolled a ${d20.roll('6')}`);
-
         const max = 20;
         let passed = true;
 
-        for (let i = 0; i < args.length; i++) {
-            const current: number = parseInt(args[i].split('d')[0], 10);
-            if (current > max) passed = false;
-        }
+        if (!args || args.length < 1) return message.channel.send(`You rolled a ${d20.roll('6')}`);
 
-        if (passed) {
-            return message.channel.send(
-                `You rolled a ${d20.roll(args.toString().replace(',', '+'), true)}`
-            );
-        } else return message.channel.send(`You tried to roll too many dice at once.`);
+        if (args[0].split('d').length <= 1) {
+            console.log(args[0]);
+            return message.channel.send(`You rolled a ${d20.roll(args[0] || '6')}`);
+        } else {
+            for (let i = 0; i < args.length; i++) {
+                const current: number = parseInt(args[i].split('d')[0], 10);
+                if (current > max) passed = false;
+            }
+
+            if (passed) {
+                return message.channel.send(
+                    `You rolled a ${d20.roll(args.toString().replace(',', '+'), true)}`
+                );
+            } else return message.channel.send(`You tried to roll too many dice at once.`);
+        }
     }
 }
