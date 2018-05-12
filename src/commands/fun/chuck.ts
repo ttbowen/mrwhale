@@ -3,7 +3,7 @@ import { Client, Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 
 export default class extends Command {
-    public constructor() {
+    constructor() {
         super({
             name: 'chucknorris',
             desc: 'Get a random Chuck Norris joke.',
@@ -13,7 +13,7 @@ export default class extends Command {
         });
     }
 
-    public async action(
+    async action(
         message: Message,
         [firstName, lastName, category]: [string, string, string]
     ): Promise<any> {
