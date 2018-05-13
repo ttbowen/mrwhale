@@ -27,6 +27,7 @@ describe('choose', () => {
 
     it('should ask the user to pass in options when no options are passed', () => {
         const message: Message = new Message(textChannelStub, null, null);
+
         cmd.action(message, null);
 
         expect(message.channel.send).calledWith(`No choices have been passed.`);
@@ -34,6 +35,7 @@ describe('choose', () => {
 
     it('should ask the user to pass more options when less than 2 options are passed', () => {
         const message: Message = new Message(textChannelStub, null, null);
+
         cmd.action(message, ['whale']);
 
         expect(message.channel.send).calledWith(`Please pass two or more choices.`);
