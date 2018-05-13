@@ -20,7 +20,6 @@ export default class extends Command<BotClient> {
         if (!args || args.length < 1) return message.channel.send(`You rolled a ${d20.roll('6')}`);
 
         if (args[0].split('d').length <= 1) {
-            console.log(args[0]);
             return message.channel.send(`You rolled a ${d20.roll(args[0] || '6')}`);
         } else {
             for (let i = 0; i < args.length; i++) {
