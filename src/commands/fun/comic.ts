@@ -1,11 +1,8 @@
-import { Client, Command, Message } from 'yamdbf';
-import { BotClient } from '../../client/botClient';
-
-import * as bluebird from 'bluebird';
 import * as cheerio from 'cheerio';
-import * as _request from 'request';
+import * as request from 'request-promise';
+import { Client, Command, Message } from 'yamdbf';
 
-const request: any = bluebird.promisify(_request);
+import { BotClient } from '../../client/botClient';
 
 export default class extends Command<BotClient> {
     public constructor() {
@@ -18,10 +15,11 @@ export default class extends Command<BotClient> {
     }
 
     private async cah(): Promise<string> {
-        return request('http://explosm.net/comics/random/')
-            .then(response => response.body)
-            .then(cheerio.load)
-            .then($ => `http:${$('#main-comic').attr('src')}`);
+        const comic = await request('http://explosm.net/comics/random/');
+        const $ = cheerio.load(comic);
+        const result = `http:${$('#main-comic').attr('src')}`;
+
+        return result;
     }
 
     private async xkcd(): Promise<string> {
@@ -29,42 +27,36 @@ export default class extends Command<BotClient> {
             url: 'https://c.xkcd.com/random/comic/',
             rejectUnauthorized: false
         };
+        const comic = await request(options);
+        const $ = cheerio.load(comic);
+        const result = `https:${$('#comic')
+            .find('img')
+            .first()
+            .attr('src')}`;
 
-        return request(options)
-            .then(response => response.body)
-            .then(cheerio.load)
-            .then(
-                $ =>
-                    `https:${$('#comic')
-                        .find('img')
-                        .first()
-                        .attr('src')}`
-            );
+        return result;
     }
 
     private async smbc(): Promise<string> {
-        return request('http://www.smbc-comics.com/random.php')
-            .then(response => response.body)
-            .then(cheerio.load)
-            .then($ =>
-                $('#cc-comicbody')
-                    .find('img')
-                    .first()
-                    .attr('src')
-            )
-            .then(url => `http://www.smbc-comics.com${url}`);
+        const comic = await request('http://www.smbc-comics.com/random.php');
+        const $ = cheerio.load(comic);
+        const result = `${$('#cc-comicbody')
+            .find('img')
+            .first()
+            .attr('src')}`;
+
+        return `http://www.smbc-comics.com${result}`;
     }
 
     private async oatmeal(): Promise<string> {
-        return request('http://theoatmeal.com/feed/random')
-            .then(response => response.body)
-            .then(cheerio.load)
-            .then($ =>
-                $('#comic')
-                    .find('img')
-                    .first()
-                    .attr('src')
-            );
+        const comic = await request('http://theoatmeal.com/feed/random');
+        const $ = cheerio.load(comic);
+        const result = `${$('#comic')
+            .find('img')
+            .first()
+            .attr('src')}`;
+
+        return result;
     }
 
     private async random(): Promise<any> {
