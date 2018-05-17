@@ -1,5 +1,5 @@
 import * as bluebird from 'bluebird';
-import * as Imgflipper from 'imgflipper';
+import * as request from 'request-promise';
 import { ClientStorage, Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 import * as memes from '../../data/memes';
@@ -26,11 +26,6 @@ export default class extends Command<BotClient> {
         if (!await storage.get('imgflip_user')) storage.set('imgflip_user', config.imgflip_user);
         if (!await storage.get('imgflip_pass')) storage.set('imgflip_pass', config.imgflip_pass);
 
-        const imgFlip: Imgflipper = new Imgflipper(
-            await storage.get('imgflip_user'),
-            await storage.get('imgflip_pass')
-        );
-
         memeName = memeName.toLowerCase().trim();
         if (memeName === 'list') {
             let list = '';
@@ -48,10 +43,20 @@ export default class extends Command<BotClient> {
                 'Please pass a valid meme or `list` to get a list of valid memes.'
             );
 
-        const flipper: any = bluebird.promisify(imgFlip.generateMeme);
+        const data = {
+            template_id: memes.default[memeName],
+            username: await storage.get('imgflip_user'),
+            password: await storage.get('imgflip_pass'),
+            text0: top,
+            text1: bottom
+        };
 
-        return flipper(memes.default[memeName], top, bottom)
-            .then(image => message.channel.send(image))
-            .catch(err => message.channel.send(err.message));
+        return request
+            .post('https://api.imgflip.com/caption_image', { form: data })
+            .then(response => {
+                const body = JSON.parse(response);
+                if (!body.success) return message.channel.send(body.error_message);
+                else return message.channel.send(body.data.url);
+            });
     }
 }
