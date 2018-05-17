@@ -26,7 +26,7 @@ describe('whale', () => {
     after(() => sandbox.restore());
 
     it('should respond with a whale face matching specified length', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         const size = 10;
         let whale = eyes.default[4][0];
         for (let i = 0; i < size; i++) {
@@ -40,7 +40,7 @@ describe('whale', () => {
     });
 
     it('should respond to let the user know when  the input is too small', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, ['x4']);
 
@@ -48,7 +48,7 @@ describe('whale', () => {
     });
 
     it('should respond to let the user know when  the input is too large', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, ['x51']);
 

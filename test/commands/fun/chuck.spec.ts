@@ -49,7 +49,7 @@ describe('chuck', () => {
     after(() => sandbox.restore());
 
     it('should respond with a random chuck norris joke', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub.resolves(JSON.parse(fixtures.chuck));
 
         await cmd.action(message, ['', '', '']);
@@ -58,7 +58,7 @@ describe('chuck', () => {
     });
 
     it('should call with firstname and lastname if specified', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         const firstName = 'Thomas';
         const lastName = 'Bowen';
         requestStub.resolves(JSON.parse(fixtures.chuck));
@@ -71,7 +71,7 @@ describe('chuck', () => {
     });
 
     it('should call with category if specified', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         const category = 'nerdy';
         requestStub.resolves(JSON.parse(fixtures.chuck));
         options.url += `category=[${category}]`;

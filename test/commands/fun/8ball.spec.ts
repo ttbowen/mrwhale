@@ -26,7 +26,7 @@ describe('8ball', () => {
     after(() => sandbox.restore());
 
     it('should respond with one of the predefined answers when called', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         message.content = '8ball Is this a good test?';
 
         cmd.action(message);
@@ -35,8 +35,8 @@ describe('8ball', () => {
     });
 
     it('should respond with correct responses with specific questions', () => {
-        const firstMsg: Message = new Message(textChannelStub, null, null);
-        const secondMsg: Message = new Message(textChannelStub, null, null);
+        const firstMsg: Message = new Message(textChannelStub, null, clientStub);
+        const secondMsg: Message = new Message(textChannelStub, null, clientStub);
         firstMsg.content = 'magicconch Will I ever get married?';
         secondMsg.content = 'magicconch What should we do to get out of the kelp forest?';
 
@@ -48,7 +48,7 @@ describe('8ball', () => {
     });
 
     it('should respond with conchshell overrides when called with aliases', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         message.content = 'conchshell Is this a good test?';
 
         cmd.action(message);

@@ -25,7 +25,7 @@ describe('roll', () => {
     after(() => sandbox.restore());
 
     it('should roll random dice value', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, []);
 
@@ -33,7 +33,7 @@ describe('roll', () => {
     });
 
     it('should roll random dice value within range of passed number', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, ['50']);
 
@@ -41,7 +41,7 @@ describe('roll', () => {
     });
 
     it('should roll the correct number of dice', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, ['5 d10']);
 

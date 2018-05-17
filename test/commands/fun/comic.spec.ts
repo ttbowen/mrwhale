@@ -37,7 +37,7 @@ describe('comic', () => {
     afterEach(() => requestStub.restore());
 
     it('should respond with a random comic when no author is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.cah);
 
@@ -47,7 +47,7 @@ describe('comic', () => {
     });
 
     it('should respond with a random cah comic when "cah" is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.cah);
 
@@ -57,7 +57,7 @@ describe('comic', () => {
     });
 
     it('should respond with a random xkcd comic when "xkcd" is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.xkcd);
 
@@ -69,7 +69,7 @@ describe('comic', () => {
     });
 
     it('should respond with a random xkcd comic when "xkcd" is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.xkcd);
 
@@ -81,7 +81,7 @@ describe('comic', () => {
     });
 
     it('should respond with a random smbc comic when "smbc" is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.smbc);
 
@@ -91,7 +91,7 @@ describe('comic', () => {
     });
 
     it('should respond with a random oatmeal comic when "oatmeal" is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.theoatmeal);
 
@@ -103,7 +103,7 @@ describe('comic', () => {
     });
 
     it('should respond with a random oatmeal comic when "random" is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub = sandbox.stub(request, 'Request');
         requestStub.resolves(fixtures.cah);
 

@@ -26,7 +26,7 @@ describe('choose', () => {
     after(() => sandbox.restore());
 
     it('should ask the user to pass in options when no options are passed', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, null);
 
@@ -34,7 +34,7 @@ describe('choose', () => {
     });
 
     it('should ask the user to pass more options when less than 2 options are passed', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, ['whale']);
 
@@ -42,7 +42,7 @@ describe('choose', () => {
     });
 
     it('should choose one of the options', () => {
-        const message: Message = new Message(textChannelStub, null, null);
+        const message: Message = new Message(textChannelStub, null, clientStub);
 
         cmd.action(message, ['whale', 'dolphin']);
 
