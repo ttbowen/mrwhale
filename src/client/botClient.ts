@@ -1,5 +1,6 @@
 import { GuildChannel, GuildMember, RichEmbed, TextChannel, User } from 'discord.js';
-import { Client, Guild, ListenerUtil, LogLevel, Providers } from 'yamdbf';
+import { Client, Guild, ListenerUtil, YAMDBFOptions } from 'yamdbf';
+
 import { Database } from '../database/database';
 import { User as BotUser } from '../entity/user';
 import { LevelManager } from './managers/levelManager';
@@ -7,10 +8,8 @@ import { ModerationManager } from './managers/moderationManager';
 import { MusicManager } from './managers/musicManager';
 import { VoiceManager } from './managers/voiceManager';
 
-const { on, once } = ListenerUtil;
 const config = require('../../config.json');
-const db = require('../../db.json');
-const path = require('path');
+const { on, once } = ListenerUtil;
 
 export class BotClient extends Client {
     private readonly _level: LevelManager;
@@ -18,18 +17,12 @@ export class BotClient extends Client {
     readonly moderation: ModerationManager;
     readonly musicPlayer: MusicManager;
 
-    constructor() {
-        super({
-            token: config.discord_token,
-            owner: config.discord_owner,
-            ratelimit: '10/1m',
-            logLevel: LogLevel.ERROR,
-            localeDir: './dist/locale',
-            statusText: 'In the Ocean.',
-            commandsDir: './dist/commands',
-            pause: true,
-            provider: Providers.SQLiteProvider(db.settings_db_url)
-        });
+    /**
+     * Creates an instance of {@link BotClient}.
+     * @param botOptions The bot options.
+     */
+    constructor(botOptions: YAMDBFOptions) {
+        super(botOptions);
         this.moderation = new ModerationManager(this);
         this.musicPlayer = new MusicManager(this);
         this._level = new LevelManager(this);
