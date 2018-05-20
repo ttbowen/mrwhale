@@ -4,8 +4,8 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Message } from 'yamdbf';
 
-import * as command from '../../../src/commands/fun/whale';
-import * as eyes from '../../../src/data/eyes';
+import * as command from '../../src/commands/fun/whale';
+import * as eyes from '../../src/data/eyes';
 
 const expect = chai.expect;
 chai.use(sinonChai);

@@ -5,8 +5,8 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Message } from 'yamdbf';
 
-import * as command from '../../../src/commands/fun/chuck';
-import { loadFixtures } from '../../helpers/loadFixtures';
+import * as command from '../../src/commands/fun/chuck';
+import { loadFixtures } from '../helpers/loadFixtures';
 
 const request = require('request-promise');
 const expect = chai.expect;
@@ -23,7 +23,7 @@ describe('chuck', () => {
     let options: any;
 
     before(() => {
-        fixtures = loadFixtures(path.join(__dirname, '../../fixtures/chuck'), 'utf8');
+        fixtures = loadFixtures(path.join(__dirname, '../fixtures/chuck'), 'utf8');
         cmd = new command.default();
         sandbox = sinon.createSandbox();
         requestStub = sandbox.stub(request, 'Request');

@@ -5,11 +5,11 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Lang, Message } from 'yamdbf';
 
-import { BotClient } from '../../../src/client/botClient';
-import * as command from '../../../src/commands/fun/meme';
-import * as memes from '../../../src/data/memes';
-import { loadFixtures } from '../../helpers/loadFixtures';
-import { TestProviders } from '../../testProviders';
+import { BotClient } from '../../src/client/botClient';
+import * as command from '../../src/commands/fun/meme';
+import * as memes from '../../src/data/memes';
+import { loadFixtures } from '../helpers/loadFixtures';
+import { TestProviders } from '../testProviders';
 
 const request = require('request-promise');
 const expect = chai.expect;
@@ -25,7 +25,7 @@ describe('meme', () => {
     let fixtures: any;
 
     before(() => {
-        fixtures = loadFixtures(path.join(__dirname, '../../fixtures/meme'), 'utf8');
+        fixtures = loadFixtures(path.join(__dirname, '../fixtures/meme'), 'utf8');
         cmd = new command.default();
         sandbox = sinon.createSandbox();
         sandbox.stub(Lang, 'loadLocalizations');

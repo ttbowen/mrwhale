@@ -5,9 +5,9 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Lang, Message } from 'yamdbf';
 
-import { BotClient } from '../../../src/client/botClient';
-import * as command from '../../../src/commands/useful/pastebin';
-import { TestProviders } from '../../testProviders';
+import { BotClient } from '../../src/client/botClient';
+import * as command from '../../src/commands/useful/pastebin';
+import { TestProviders } from '../testProviders';
 
 const request = require('request-promise');
 const expect = chai.expect;

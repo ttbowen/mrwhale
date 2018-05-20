@@ -4,7 +4,8 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Message } from 'yamdbf';
 
-import * as command from '../../../src/commands/fun/roll';
+import * as command from '../../src/commands/fun/choose';
+import * as responses from '../../src/data/choose';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -12,7 +13,7 @@ chai.use(sinonChai);
 const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
-describe('roll', () => {
+describe('choose', () => {
     let cmd: command.default;
     let sandbox: sinon.SinonSandbox;
 
@@ -24,27 +25,29 @@ describe('roll', () => {
 
     after(() => sandbox.restore());
 
-    it('should roll random dice value', () => {
+    it('should ask the user to pass in options when no options are passed', () => {
         const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, []);
+        cmd.action(message, null);
 
-        expect(message.channel.send).calledWith(`You rolled a 1`);
+        expect(message.channel.send).calledWith(`No choices have been passed.`);
     });
 
-    it('should roll random dice value within range of passed number', () => {
+    it('should ask the user to pass more options when less than 2 options are passed', () => {
         const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, ['50']);
+        cmd.action(message, ['whale']);
 
-        expect(message.channel.send).calledWith(`You rolled a 5`);
+        expect(message.channel.send).calledWith(`Please pass two or more choices.`);
     });
 
-    it('should roll the correct number of dice', () => {
+    it('should choose one of the options', () => {
         const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, ['5 d10']);
+        cmd.action(message, ['whale', 'dolphin']);
 
-        expect(message.channel.send).calledWith(`You rolled a 1,1,1,1,1`);
+        expect(message.channel.send).calledWith(
+            `${responses.default[1].replace(/<<CHOICE>>/g, 'whale')}`
+        );
     });
 });
