@@ -1,9 +1,9 @@
 import * as chai from 'chai';
-import { Client, TextChannel, User } from 'discord.js';
+import { TextChannel, User } from 'discord.js';
 import * as path from 'path';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { Lang, Message } from 'yamdbf';
+import { Lang, Message, StorageFactory } from 'yamdbf';
 
 import { BotClient } from '../../src/client/botClient';
 import * as command from '../../src/commands/useful/pastebin';
@@ -13,29 +13,29 @@ const request = require('request-promise');
 const expect = chai.expect;
 chai.use(sinonChai);
 
-const clientStub = sinon.createStubInstance(Client);
+const clientStub = sinon.createStubInstance(BotClient);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('pastebin', () => {
     let cmd: command.default;
     let sandbox: sinon.SinonSandbox;
     let requestStub: sinon.SinonStub;
-    let testClient: BotClient;
 
     before(() => {
         cmd = new command.default();
         sandbox = sinon.createSandbox();
         requestStub = sandbox.stub(request, 'Request');
-        sandbox.stub(Lang, 'loadLocalizations');
 
-        testClient = new BotClient({
-            token: 'abcdefghijklmnopqrstuvwxyz123456789',
-            owner: '123456789',
-            provider: TestProviders.TestStorageProvider(),
-            passive: true
-        });
-        testClient.storage.set('pastebin', 'abcdefghijklmnopqrstuvwxyz123456789');
-        cmd.client = testClient;
+        clientStub.provider = TestProviders.TestStorageProvider();
+        const storageFactory: StorageFactory = new StorageFactory(
+            clientStub,
+            new clientStub.provider('guild_storage'),
+            new clientStub.provider('guild_settings')
+        );
+        clientStub.storage = storageFactory.createClientStorage();
+        clientStub.storage.set('pastebin', 'abcdefghijklmnopqrstuvwxyz123456789');
+
+        cmd.client = clientStub;
     });
 
     after(() => sandbox.restore());
@@ -43,7 +43,7 @@ describe('pastebin', () => {
     it('should respond with a pastebin url', async () => {
         const paste = 'This is a paste';
         const expected = 'https://pastebin.com/DcmTX479';
-        const message: Message = new Message(textChannelStub, null, testClient);
+        const message: Message = new Message(textChannelStub, null, clientStub);
         requestStub.resolves(expected);
 
         await cmd.action(message, [paste]);
