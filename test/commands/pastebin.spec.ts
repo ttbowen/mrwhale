@@ -5,6 +5,9 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Lang, Message, StorageFactory } from 'yamdbf';
 
+const mock = require('mock-require');
+mock('../../config.json');
+
 import { BotClient } from '../../src/client/botClient';
 import * as command from '../../src/commands/useful/pastebin';
 import { TestProviders } from '../testProviders';
