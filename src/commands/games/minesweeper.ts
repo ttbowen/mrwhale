@@ -44,7 +44,7 @@ export default class extends Command<BotClient> {
                 const gameOption: MinesweeperOptions = {
                     gridXSize: 15,
                     gridYSize: 15,
-                    bombCount: 20,
+                    bombCount: 15,
                     gameDuration: 400
                 };
                 const game: MinesweeperGame = new MinesweeperGame(gameOption, authorId);
@@ -54,7 +54,7 @@ export default class extends Command<BotClient> {
                 const gameOption: MinesweeperOptions = {
                     gridXSize: 10,
                     gridYSize: 10,
-                    bombCount: 15,
+                    bombCount: 10,
                     gameDuration: 360
                 };
                 const game: MinesweeperGame = new MinesweeperGame(gameOption, authorId);
@@ -64,7 +64,7 @@ export default class extends Command<BotClient> {
                 const gameOption: MinesweeperOptions = {
                     gridXSize: 15,
                     gridYSize: 15,
-                    bombCount: 26,
+                    bombCount: 20,
                     gameDuration: 600
                 };
                 const game: MinesweeperGame = new MinesweeperGame(gameOption, authorId);

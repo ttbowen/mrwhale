@@ -2,7 +2,7 @@ const lose = [
     'And you lost your head in the process. Tough luck mate',
     'You failed your country!',
     'It took 40 days to clean up the mess',
-    'Pizza tastes good. To bad you lost your tongue... somehow.',
+    'Pizza tastes good. Too bad you lost your tongue... somehow.',
     '*Dolphin noises*'
 ];
 
