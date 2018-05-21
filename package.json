@@ -61,6 +61,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "d20": "^1.4.1",
+    "mock-require": "^3.0.2",
     "moment": "^2.22.1",
     "moment-duration-format": "^2.2.2",
     "node-opus": "^0.3.0",
