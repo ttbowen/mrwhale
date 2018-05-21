@@ -258,6 +258,10 @@ export default class extends Command<BotClient> {
             );
         }
 
+        if (game.isRevealed(xTilePos, yTilePos)) {
+            return message.channel.send(`That tile is already revealed! It can't be flagged.`);
+        }
+
         if (game.isFlagged(xTilePos, yTilePos)) {
             return message.channel.send(`That tile is already flagged!`);
         }
@@ -309,6 +313,10 @@ export default class extends Command<BotClient> {
             );
         }
 
+        if (game.isRevealed(xTilePos, yTilePos)) {
+            return message.channel.send(`That tile is already revealed! It can't be unflagged.`);
+        }
+
         if (!game.isFlagged(xTilePos, yTilePos)) {
             return message.channel.send(`That tile is already unflagged!`);
         }
@@ -319,59 +327,64 @@ export default class extends Command<BotClient> {
     }
 
     async action(message: Message, args: any[]): Promise<any> {
-        // return message.channel.sendMessage(this.numToString(parseInt(args.toString(), 10)).toString());
-        // const mineTest = new MinesweeperGame();
-        // mineTest.start();
-        // return message.channel.sendMessage(mineTest.playingFieldString);
         const channelId: string = message.channel.id;
         const authorId: string = message.author.id;
+        const prefix: string = await this.client.getPrefix(message.guild);
 
         if (this._games.has(channelId)) {
             const game = this._games.get(channelId);
             if (game.timedOut) {
-                if (args[0]) {
-                    if (args[0].toLowerCase !== 'start') {
-                        message.channel.send("Time's up!");
-                        this.endGame(message);
-                    } else {
-                        message.channel.send('Last game is timed out! Starting new game...');
-                        game.forceLose();
-                    }
-                } else {
+                if (message.content.startsWith(`${prefix}minesweeper`)) {
                     message.channel.send('Last game is timed out! Starting new game...');
                     game.forceLose();
+                } else {
+                    message.channel.send("Time's up!");
+                    return this.endGame(message);
                 }
             }
             if (game.gameOver) this._games.delete(channelId);
         }
 
-        const prefix: string = await this.client.getPrefix(message.guild);
-
         if (message.content.startsWith(`${prefix}reveal`)) {
-            if (args.length < 2) {
-                return message.channel
-                    .send(`Please provide a valid coordinate. (${prefix}reveal <number> <letter>) \n
-                                            ex: ${prefix}reveal 15 c`);
+            if (this._games.has(channelId)) {
+                if (args.length < 2) {
+                    return message.channel.send(
+                        `Please provide a valid coordinate. (${prefix}reveal <number> <letter>) \n` +
+                            `ex: ${prefix}reveal 15 c`
+                    );
+                }
+                return this.reveal(message, args);
+            } else {
+                return message.channel.send('No game of minesweeper is underway');
             }
-            return this.reveal(message, args);
         }
 
         if (message.content.startsWith(`${prefix}flag`)) {
-            if (args.length < 2) {
-                return message.channel
-                    .send(`Please provide a valid coordinate. (${prefix}flag <number> <letter>) \n
-                                            ex: ${prefix}reveal 1 aa`);
+            if (this._games.has(channelId)) {
+                if (args.length < 2) {
+                    return message.channel.send(
+                        `Please provide a valid coordinate. (${prefix}flag <number> <letter>) \n` +
+                            `ex: ${prefix}reveal 1 aa`
+                    );
+                }
+                return this.flag(message, args);
+            } else {
+                return message.channel.send('No game of minesweeper is underway');
             }
-            return this.flag(message, args);
         }
 
         if (message.content.startsWith(`${prefix}unflag`)) {
-            if (args.length < 2) {
-                return message.channel
-                    .send(`Please provide a valid coordinate. (${prefix}unflag <number> <letter>) \n
-                                            ex: ${prefix}reveal 14 ac`);
+            if (this._games.has(channelId)) {
+                if (args.length < 2) {
+                    return message.channel.send(
+                        `Please provide a valid coordinate. (${prefix}unflag <number> <letter>) \n` +
+                            `ex: ${prefix}reveal 14 ac`
+                    );
+                }
+                return this.unflag(message, args);
+            } else {
+                return message.channel.send('No game of minesweeper is underway');
             }
-            return this.unflag(message, args);
         }
 
         if (!args[0]) return message.channel.send('Please provide a command.');

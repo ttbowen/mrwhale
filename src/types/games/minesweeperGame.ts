@@ -156,7 +156,7 @@ export class MinesweeperGame {
         let playingFieldString = '   ';
 
         for (let i = 0; i < this._mineNeighborCount[0].length; i++) {
-            playingFieldString += i.toString().padStart(3, ' ');
+            playingFieldString += i.toString().padEnd(3, ' ');
         }
         playingFieldString += '\n';
 
@@ -179,7 +179,7 @@ export class MinesweeperGame {
                         charPad = '►';
                     } else charPad = '■';
                 }
-                playingFieldString += charPad.padStart(3, ' ');
+                playingFieldString += charPad.padEnd(3, ' ');
             }
             playingFieldString += '\n';
         }
