@@ -11,8 +11,11 @@ export default class extends Command<BotClient> {
     constructor() {
         super({
             name: 'minesweeper',
-            desc: 'Play the class game of hangman.',
-            usage: '<prefix>minesweeper <start <easy|medium|hard>|end>',
+            desc: 'Play minesweeper. A classic.',
+            usage:
+                '<prefix>minesweeper <start <easy|medium|hard>|end>, ' +
+                'After starting a game, use <prefix>reveal to reveal a tile,' +
+                '<prefix>flag to flag a tile, and <prefix>unflag to unflag a tile',
             aliases: ['flag', 'unflag', 'reveal'],
             group: 'games',
             ratelimit: '10/30s',
@@ -183,6 +186,10 @@ export default class extends Command<BotClient> {
             return message.channel.send(`That tile is flagged! No revealing a flagged tile!`);
         }
 
+        if (game.isRevealed(xTilePos, yTilePos)) {
+            return message.channel.send(`That tile is already revealed!`);
+        }
+
         game.revealTile(xTilePos, yTilePos);
 
         if (game.gameOver) {
@@ -322,9 +329,14 @@ export default class extends Command<BotClient> {
         if (this._games.has(channelId)) {
             const game = this._games.get(channelId);
             if (game.timedOut) {
-                if (args[0] && args[0].toLowerCase !== 'start') {
-                    message.channel.send("Time's up!");
-                    this.endGame(message);
+                if (args[0]) {
+                    if (args[0].toLowerCase !== 'start') {
+                        message.channel.send("Time's up!");
+                        this.endGame(message);
+                    } else {
+                        message.channel.send('Last game is timed out! Starting new game...');
+                        game.forceLose();
+                    }
                 } else {
                     message.channel.send('Last game is timed out! Starting new game...');
                     game.forceLose();

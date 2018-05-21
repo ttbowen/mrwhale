@@ -322,6 +322,10 @@ export class MinesweeperGame {
         return this._flaggedTile[xPosition][yPosition];
     }
 
+    isRevealed(xPosition: number, yPosition: number): boolean {
+        return this._revealedTiles[xPosition][yPosition];
+    }
+
     get timeLeftString(): string {
         const timeLeft = this._gameDuration - (Date.now() - this._startTime) / 1000;
         return Math.round(timeLeft).toString();
