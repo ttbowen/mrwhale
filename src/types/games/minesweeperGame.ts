@@ -8,6 +8,7 @@ export class MinesweeperGame {
     private _minefield: boolean[][];
     private _mineNeighborCount: number[][];
     private _flaggedTile: boolean[][];
+    private _flaggedTileCount: number;
     private _revealedTiles: boolean[][];
     private _lost: boolean;
     private _totalTileCount: number;
@@ -26,6 +27,7 @@ export class MinesweeperGame {
         this._lost = false;
         this._totalTileCount = this._xTileSize * this._yTileSize;
         this._revealedTileCount = 0;
+        this._flaggedTileCount = 0;
         this._ownerId = owner;
         this._gameDuration = options.gameDuration;
     }
@@ -272,6 +274,7 @@ export class MinesweeperGame {
                 return;
             }
             this._flaggedTile[xPosition][yPosition] = true;
+            this._flaggedTileCount++;
         }
     }
 
@@ -283,7 +286,12 @@ export class MinesweeperGame {
             yPosition < this._minefield[1].length
         ) {
             this._flaggedTile[xPosition][yPosition] = false;
+            this._flaggedTileCount--;
         }
+    }
+
+    get flaggedTileCount(): number {
+        return this._flaggedTileCount;
     }
 
     forceLose(): void {

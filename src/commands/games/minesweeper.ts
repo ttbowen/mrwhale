@@ -129,12 +129,16 @@ export default class extends Command<BotClient> {
 
         str +=
             '\nTile left: ' +
-            (game.totalTileCount - game.totalMineCount - game.revealedTileCount).toString();
+            (game.totalTileCount - game.totalMineCount - game.revealedTileCount).toString() +
+            ' | Uncovered tile: ' +
+            game.revealedTileCount.toString();
         str +=
             '\nTotal tile count: ' +
             game.totalTileCount.toString() +
-            ' | Mine left: ' +
-            game.totalMineCount.toString();
+            ' | There is ' +
+            game.totalMineCount.toString() +
+            ' mines';
+        str += '\nYou flagged ' + game.flaggedTileCount.toString() + ' tile';
         str += '\nYou have ' + game.timeLeftString + ' seconds left!```';
 
         return str;
