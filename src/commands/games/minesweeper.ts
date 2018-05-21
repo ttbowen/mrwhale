@@ -144,7 +144,7 @@ export default class extends Command<BotClient> {
         return str;
     }
 
-    async reveal(message: Message, args: any[]): Promise<any> {
+    private async reveal(message: Message, args: any[]): Promise<any> {
         const channelId: string = message.channel.id;
         if (!this._games.has(channelId)) {
             return message.channel.sendMessage(
@@ -220,7 +220,7 @@ export default class extends Command<BotClient> {
         return message.channel.send(this.constructGameScreen(game));
     }
 
-    async flag(message: Message, args: any[]): Promise<any> {
+    private async flag(message: Message, args: any[]): Promise<any> {
         const channelId: string = message.channel.id;
         if (!this._games.has(channelId)) {
             return message.channel.sendMessage(
@@ -275,7 +275,7 @@ export default class extends Command<BotClient> {
         return message.channel.send(this.constructGameScreen(game));
     }
 
-    async unflag(message: Message, args: any[]): Promise<any> {
+    private async unflag(message: Message, args: any[]): Promise<any> {
         const channelId: string = message.channel.id;
         if (!this._games.has(channelId)) {
             return message.channel.sendMessage(
