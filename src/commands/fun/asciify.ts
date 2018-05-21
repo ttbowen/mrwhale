@@ -47,12 +47,12 @@ export default class extends Command<BotClient> {
         };
 
         return request(options).then(asciified => {
-            const embed = new RichEmbed();
-            embed.setTitle('ASCIIFY');
-            embed.setURL(options.url);
-            embed.setAuthor(message.author.username, message.author.avatarURL);
-            embed.addField('ASCII ART', this.formatAscii(asciified), false);
-            message.channel.send({ embed });
+            // const embed = new RichEmbed();
+            // embed.setTitle('ASCIIFY');
+            // embed.setURL(options.url);
+            // embed.setAuthor(message.author.username, message.author.avatarURL);
+            // embed.addField('ASCII ART', this.formatAscii(asciified), false);
+            message.channel.send('```' + asciified + '```');
         });
     }
 }
