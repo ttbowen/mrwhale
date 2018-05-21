@@ -19,19 +19,6 @@ export default class extends Command<BotClient> {
         });
     }
 
-    private formatAscii(text: string): string {
-        let formattedAscii = '';
-        let currentIndex = 0;
-        do {
-            if (text[currentIndex] === '\n') formattedAscii += '\n';
-            else if (text[currentIndex] === ' ') formattedAscii += '░';
-            else formattedAscii += '▓';
-
-            currentIndex++;
-        } while (currentIndex < text.length);
-        return formattedAscii;
-    }
-
     @using(resolve('fontID: Number, ...text: String'))
     @using(expect('fontID: Number, ...text: String'))
     async action(message: Message, [fontID, ...text]: [number, string[]]): Promise<any> {
@@ -47,12 +34,7 @@ export default class extends Command<BotClient> {
         };
 
         return request(options).then(asciified => {
-            const embed = new RichEmbed();
-            embed.setTitle('ASCIIFY');
-            embed.setURL(options.url);
-            embed.setAuthor(message.author.username, message.author.avatarURL);
-            embed.addField('ASCII ART', this.formatAscii(asciified), false);
-            message.channel.send({ embed });
+            message.channel.send('```' + asciified + '```');
         });
     }
 }
