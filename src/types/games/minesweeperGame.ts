@@ -19,6 +19,96 @@ export class MinesweeperGame {
     private _startTime: number;
     private _gameDuration: number;
 
+    get flaggedTileCount(): number {
+        return this._flaggedTileCount;
+    }
+
+    get gameOver(): boolean {
+        return this.won || this.lost;
+    }
+
+    get won(): boolean {
+        return this._revealedTileCount === this._totalTileCount - this._totalMineCount;
+    }
+
+    get lost(): boolean {
+        return this._lost;
+    }
+
+    get owner(): string {
+        return this._ownerId;
+    }
+
+    get totalMineCount(): number {
+        return this._totalMineCount;
+    }
+
+    get totalTileCount(): number {
+        return this._totalTileCount;
+    }
+
+    get revealedTileCount(): number {
+        return this._revealedTileCount;
+    }
+
+    get timeLeftString(): string {
+        const timeLeft = this._gameDuration - (Date.now() - this._startTime) / 1000;
+        return Math.round(timeLeft).toString();
+    }
+
+    get timedOut(): boolean {
+        const timeDiff = (Date.now() - this._startTime) / 1000;
+        return timeDiff > this._gameDuration;
+    }
+
+    get xTileSize(): number {
+        return this._xTileSize;
+    }
+
+    get yTileSize(): number {
+        return this._yTileSize;
+    }
+
+    get playingFieldString(): string {
+        let playingFieldString = '   ';
+
+        for (let i = 0; i < this._mineNeighborCount[0].length; i++) {
+            playingFieldString += i.toString().padEnd(3, ' ');
+        }
+        playingFieldString += '\n';
+
+        for (let y = 0; y < this._minefield[1].length; y++) {
+            playingFieldString += this.numToString(y)
+                .toUpperCase()
+                .padEnd(3, ' ');
+            for (let x = 0; x < this._minefield[0].length; x++) {
+                let charPad = '';
+                if (this._revealedTiles[x][y]) {
+                    if (this._minefield[x][y] === true) {
+                        charPad = '☼';
+                    } else if (this._mineNeighborCount[x][y] > 0) {
+                        charPad = this._mineNeighborCount[x][y].toString();
+                    } else {
+                        charPad = '□';
+                    }
+                } else {
+                    if (this._flaggedTile[x][y] === true) {
+                        charPad = '►';
+                    } else charPad = '■';
+                }
+                playingFieldString += charPad.padEnd(3, ' ');
+            }
+            playingFieldString += '\n';
+        }
+
+        return playingFieldString;
+    }
+
+    /**
+     * Creates an instance of {@link MinesweeperGame}.
+     * @param options The game options.
+     * @param owner The game owner.
+     */
     constructor(options: MinesweeperOptions, owner: string) {
         this._xTileSize = options.gridXSize;
         this._yTileSize = options.gridYSize;
@@ -154,41 +244,6 @@ export class MinesweeperGame {
         return neighborCount;
     }
 
-    get playingFieldString(): string {
-        let playingFieldString = '   ';
-
-        for (let i = 0; i < this._mineNeighborCount[0].length; i++) {
-            playingFieldString += i.toString().padEnd(3, ' ');
-        }
-        playingFieldString += '\n';
-
-        for (let y = 0; y < this._minefield[1].length; y++) {
-            playingFieldString += this.numToString(y)
-                .toUpperCase()
-                .padEnd(3, ' ');
-            for (let x = 0; x < this._minefield[0].length; x++) {
-                let charPad = '';
-                if (this._revealedTiles[x][y]) {
-                    if (this._minefield[x][y] === true) {
-                        charPad = '☼';
-                    } else if (this._mineNeighborCount[x][y] > 0) {
-                        charPad = this._mineNeighborCount[x][y].toString();
-                    } else {
-                        charPad = '□';
-                    }
-                } else {
-                    if (this._flaggedTile[x][y] === true) {
-                        charPad = '►';
-                    } else charPad = '■';
-                }
-                playingFieldString += charPad.padEnd(3, ' ');
-            }
-            playingFieldString += '\n';
-        }
-
-        return playingFieldString;
-    }
-
     private revealAt(xPosition: number, yPosition: number): void {
         if (
             xPosition >= 0 &&
@@ -290,42 +345,6 @@ export class MinesweeperGame {
         }
     }
 
-    get flaggedTileCount(): number {
-        return this._flaggedTileCount;
-    }
-
-    forceLose(): void {
-        this._lost = true;
-    }
-
-    get gameOver(): boolean {
-        return this.won || this.lost;
-    }
-
-    get won(): boolean {
-        return this._revealedTileCount === this._totalTileCount - this._totalMineCount;
-    }
-
-    get lost(): boolean {
-        return this._lost;
-    }
-
-    get owner(): string {
-        return this._ownerId;
-    }
-
-    get totalMineCount(): number {
-        return this._totalMineCount;
-    }
-
-    get totalTileCount(): number {
-        return this._totalTileCount;
-    }
-
-    get revealedTileCount(): number {
-        return this._revealedTileCount;
-    }
-
     isFlagged(xPosition: number, yPosition: number): boolean {
         return this._flaggedTile[xPosition][yPosition];
     }
@@ -334,25 +353,12 @@ export class MinesweeperGame {
         return this._revealedTiles[xPosition][yPosition];
     }
 
-    get timeLeftString(): string {
-        const timeLeft = this._gameDuration - (Date.now() - this._startTime) / 1000;
-        return Math.round(timeLeft).toString();
-    }
-
-    get timedOut(): boolean {
-        const timeDiff = (Date.now() - this._startTime) / 1000;
-        return timeDiff > this._gameDuration;
-    }
-
-    get xTileSize(): number {
-        return this._xTileSize;
-    }
-    get yTileSize(): number {
-        return this._yTileSize;
+    forceLose(): void {
+        this._lost = true;
     }
 
     /**
-     * Start the hangman game.
+     * Start the minesweeper game.
      */
     start(): void {
         this.createPlayingField(this._xTileSize, this._yTileSize, this._totalMineCount);

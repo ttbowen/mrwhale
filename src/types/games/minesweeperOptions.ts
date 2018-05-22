@@ -1,5 +1,5 @@
 /**
- * Represents hangman game options.
+ * Represents minesweeper options.
  */
 export type MinesweeperOptions = {
     gridXSize: number;
