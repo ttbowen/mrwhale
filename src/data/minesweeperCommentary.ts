@@ -1,4 +1,4 @@
-const lose = [
+export const lose = [
     'And you lost your head in the process. Tough luck mate',
     'You failed your country!',
     'It took 40 days to clean up the mess',
@@ -6,12 +6,9 @@ const lose = [
     '*Dolphin noises*'
 ];
 
-const win = [
+export const win = [
     'A winner is you!',
     'And you only lost one arm!',
     'Get some beer!',
     'Momma be proud of you'
 ];
-
-export { lose };
-export { win };
