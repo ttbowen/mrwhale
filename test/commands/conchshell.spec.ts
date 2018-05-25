@@ -4,8 +4,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Message } from 'yamdbf';
 
-import * as command from '../../src/commands/fun/8ball';
-import * as responses from '../../src/data/8ball';
+import * as command from '../../src/commands/fun/conchshell';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -13,7 +12,7 @@ chai.use(sinonChai);
 const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
-describe('8ball', () => {
+describe('conchshell', () => {
     let cmd: command.default;
     let sandbox: sinon.SinonSandbox;
 
@@ -25,16 +24,16 @@ describe('8ball', () => {
 
     after(() => sandbox.restore());
 
-    it('should respond with one of the predefined answers when called', () => {
+    it('should respond with a random answer when called', () => {
         const message: Message = new Message(textChannelStub, null, clientStub);
-        message.content = '8ball Is this a good test?';
+        message.content = 'magicconch Is this a good test?';
 
         cmd.action(message);
 
-        expect(message.channel.send).calledWith(`:8ball: ${responses.default[3]}`);
+        expect(message.channel.send).calledWith(`:shell: I don't think so.`);
     });
 
-    it('should respond with correct responses with specific questions', () => {
+    it('should respond with fixed answers to specific questions', () => {
         const firstMsg: Message = new Message(textChannelStub, null, clientStub);
         const secondMsg: Message = new Message(textChannelStub, null, clientStub);
         firstMsg.content = 'magicconch Will I ever get married?';
@@ -45,14 +44,5 @@ describe('8ball', () => {
 
         expect(firstMsg.channel.send).calledWith(`:shell: Maybe someday.`);
         expect(secondMsg.channel.send).calledWith(`:shell: Nothing.`);
-    });
-
-    it('should respond with conchshell overrides when called with aliases', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
-        message.content = 'conchshell Is this a good test?';
-
-        cmd.action(message);
-
-        expect(message.channel.send).calledWith(`:shell: I don't think so.`);
     });
 });
