@@ -6,7 +6,7 @@ export default class extends Command<BotClient> {
         super({
             name: 'conchshell',
             desc: 'A magic conchshell. Tells your fortune.',
-            usage: '<prefix>8ball',
+            usage: '<prefix>conchshell',
             aliases: ['conch', 'magicconch', 'magicconchshell'],
             group: 'fun'
         });
