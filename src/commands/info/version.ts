@@ -1,7 +1,6 @@
 import { RichEmbed } from 'discord.js';
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
-import * as responses from '../../data/8ball';
 
 export default class extends Command<BotClient> {
     constructor() {
