@@ -50,6 +50,8 @@ export default class extends Command<BotClient> {
                 return message.channel.send('You must be in the same channel first.');
 
             if (search && search.complete) {
+                search.msg.edit('');
+
                 const selected: Track = search.results[option - 1];
                 const playOptions: PlayOptions = {
                     channel: message.channel as TextChannel,
