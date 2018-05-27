@@ -35,20 +35,16 @@ export default class extends Command<BotClient> {
         }
 
         if (tracks && tracks.length !== 0) {
-            embed.addField('Up next', ':track_next:');
-
+            let upNext = '';
             for (let i = 0; i < tracks.length; i++) {
                 const title: string = tracks[i].title;
                 const username: string = tracks[i].requestedBy.user.username;
                 const duration: moment.Duration = moment.duration(tracks[i].duration * miliseconds);
-                embed.addField(
-                    `${i + 1}.`,
-                    `${tracks[i].title} | ${duration.format(
-                        'h:mm:ss'
-                    )}  - Requested by: ${username}`,
-                    true
-                );
+                upNext += `${i + 1}. ${tracks[i].title} | ${duration.format(
+                    'h:mm:ss'
+                )}  - Requested by: ${username}\n`;
             }
+            embed.addField('Up next :track_next:', upNext);
         } else embed.addField('There is nothing in the queue', ':track_next:');
 
         return message.channel.send({ embed });
