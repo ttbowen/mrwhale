@@ -58,11 +58,15 @@ export default class extends Command<BotClient> {
 
                 if (this.client.musicPlayer.streamDispatchers.has(guildId)) {
                     this.client.musicPlayer.playList.add(guildId, selected);
-                    return search.msg.edit(`Added \`${selected.title}\` to the playlist.`);
+                    search.msg.edit(`Added \`${selected.title}\` to the playlist.`);
                 } else {
                     this.client.musicPlayer.play(selected, playOptions);
-                    return search.msg.edit(`**Now playing** :notes: \`${selected.title}\``);
+                    search.msg.edit(`**Now playing** :notes: \`${selected.title}\``);
                 }
+                Util.removeNestedValue(this.client.musicPlayer.trackSearch.searches, [
+                    guildId,
+                    memberId
+                ]);
             }
         } else return message.channel.send('You need to join a voice channel first.');
     }
