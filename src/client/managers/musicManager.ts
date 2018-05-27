@@ -71,7 +71,7 @@ export class MusicManager {
         dispatcher.setVolume(0.5);
         this.playList.setCurrentTrack(guildId, video);
 
-        dispatcher.on('end', () => {
+        const dispatchHandler = () => {
             const playlist: Track[] = this.playList.get(guildId);
             this.playList.removeCurrentTrack(guildId);
             this.streamDispatchers.delete(guildId);
@@ -79,7 +79,9 @@ export class MusicManager {
             if (this.playList.exists(guildId) && playlist.length > 0) {
                 return this.playNext(guildId, options);
             }
-        });
+        };
+        dispatcher.on('error', dispatchHandler);
+        dispatcher.on('end', dispatchHandler);
         this.streamDispatchers.set(guildId, dispatcher);
     }
 
