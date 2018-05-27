@@ -6,19 +6,21 @@ import {
     VoiceConnection
 } from 'discord.js';
 import { Guild, Message } from 'yamdbf';
+import * as ytdl from 'ytdl-core';
+
 import { PlayList } from '../../types/music/playList';
+import { PlayOptions } from '../../types/music/playOptions';
 import { Track } from '../../types/music/track';
+import { TrackSearch } from '../../types/music/trackSearch';
 import { BotClient } from '../botClient';
 import { VoiceManager } from './voiceManager';
-
-import * as ytdl from 'ytdl-core';
-import { PlayOptions } from '../../types/music/playOptions';
 
 /**
  * Manager for music commands.
  */
 export class MusicManager {
     readonly voiceManager: VoiceManager;
+    readonly trackSearch: TrackSearch;
     readonly streamDispatchers: Collection<string, StreamDispatcher>;
     readonly playList: PlayList;
 
@@ -30,6 +32,7 @@ export class MusicManager {
         this.voiceManager = new VoiceManager(this.client);
         this.streamDispatchers = new Collection<string, StreamDispatcher>();
         this.playList = new PlayList();
+        this.trackSearch = new TrackSearch(this.client);
     }
 
     /**
@@ -54,7 +57,7 @@ export class MusicManager {
      * @param video The video url to play.
      * @param options The play options.
      */
-    async play(video: Track, options: PlayOptions): Promise<void> {
+    play(video: Track, options: PlayOptions): void {
         const channel: TextChannel = options.channel;
         const guildId: string = channel.guild.id;
         const streamOption = {
@@ -62,38 +65,34 @@ export class MusicManager {
             quality: 'highestaudio'
         };
 
-        const dispatcher = options.voice.playStream(ytdl(video.url, streamOption));
+        const dispatcher: StreamDispatcher = options.voice.playStream(
+            ytdl(video.url, streamOption)
+        );
         dispatcher.setVolume(0.5);
         this.playList.setCurrentTrack(guildId, video);
 
-        const title: string = (await this.getVideoInfo(video.url)).title;
-        const msg = (await channel.send(`**Now playing** :notes: \`${title}\``)) as Message;
-
         dispatcher.on('end', () => {
-            this.streamDispatchers.delete(guildId);
+            const playlist: Track[] = this.playList.get(guildId);
             this.playList.removeCurrentTrack(guildId);
-            msg.edit(`**Finished playing** :notes: \`${title}\``);
+            this.streamDispatchers.delete(guildId);
 
-            if (this.playList.exists(guildId) && this.playList.get(guildId).length > 0) {
+            if (this.playList.exists(guildId) && playlist.length > 0) {
                 return this.playNext(guildId, options);
-            } else options.voice.channel.leave();
+            }
         });
         this.streamDispatchers.set(guildId, dispatcher);
     }
 
     /**
      * Play the next track in the playlist.
-     * @param guildId The guild identifer.
+     * @param guildId The guild identifier.
      * @param options Contains the play options.
      */
     playNext(guildId: string, options: PlayOptions): void {
         const channel: TextChannel = options.channel;
         const next: Track = this.playList.next(guildId);
 
-        if (next) {
-            channel.send(`Playing next track in the playlist.`);
-            this.play(next, options);
-        }
+        if (next) this.play(next, options);
     }
 
     /**
