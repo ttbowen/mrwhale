@@ -29,7 +29,7 @@ export default class extends Command<BotClient> {
                 this.client.musicPlayer.stop(connection);
                 connection.channel.leave();
             } catch {
-                message.channel.send('Could not leave this voice channel.');
+                return message.channel.send('Could not leave this voice channel.');
             }
 
             return message.channel.send(`Left ${channel.name}.`);
