@@ -1,11 +1,12 @@
 import {
     Collection,
+    GuildMember,
     StreamDispatcher,
     TextChannel,
     VoiceChannel,
     VoiceConnection
 } from 'discord.js';
-import { Guild, Message } from 'yamdbf';
+import { Guild, GuildSettings, GuildStorage, Message } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { PlayList } from '../../types/music/playList';
@@ -143,5 +144,62 @@ export class MusicManager {
         if (ytdl.validateLink(video)) videoInfo = await ytdl.getInfo(video);
 
         return videoInfo;
+    }
+
+    /**
+     * Checks whether the specified {@link Guild} has set the music role.
+     * @param guild The guild to check.
+     */
+    async hasSetMusicRole(guild: Guild): Promise<boolean> {
+        const storage: GuildStorage = this.client.storage.guilds.get(guild.id);
+        const hasModRole: boolean = await storage.settings.exists('musicrole');
+
+        return hasModRole && guild.roles.has(await storage.settings.get('musicrole'));
+    }
+
+    /**
+     * Checks whether the {@link GuildMember} has the music role.
+     * @param member The guild member.
+     */
+    async hasMusicRole(member: GuildMember): Promise<boolean> {
+        if (!await this.hasSetMusicRole(member.guild)) return false;
+        const storage: GuildStorage = this.client.storage.guilds.get(member.guild.id);
+
+        return member.roles.has(await storage.settings.get('musicrole'));
+    }
+
+    /**
+     * Checks whether the calling {@link GuildMember} can call a music command.
+     * @param message The message which contains the command call.
+     */
+    async canCallMusicCommand(message: Message): Promise<boolean> {
+        if (!message.guild) return false;
+        if (!await this.hasSetMusicRole(message.guild)) return false;
+        if (!await this.hasMusicRole(message.member)) return false;
+
+        return true;
+    }
+
+    /**
+     * Sends error messages for music commands.
+     * @param message The message received from command call.
+     */
+    async error(message: Message): Promise<Message | Message[]> {
+        const settings: GuildSettings = await message.guild.storage.settings;
+        const hasMusicRole: boolean = await message.guild.storage.settings.exists('musicrole');
+        const prefix: string = await this.client.getPrefix(message.guild);
+        const musicRoleName: string = hasMusicRole
+            ? `\`${message.guild.roles.get(await settings.get('musicrole')).name}\``
+            : 'mod';
+
+        if (!message.guild) return await message.channel.send('Command cannot be called from DM.');
+
+        if (!await this.hasSetMusicRole(message.guild))
+            return message.channel.send(
+                `This guild has no music role set. Use \`${prefix}setup musicrole <role>\` to set one`
+            );
+
+        if (!await this.hasMusicRole(message.member))
+            return message.channel.send(`You need the ${musicRoleName} role to use this command.`);
     }
 }
