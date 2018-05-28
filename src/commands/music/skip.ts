@@ -1,9 +1,10 @@
 import { VoiceChannel } from 'discord.js';
 import { Command, Message } from 'yamdbf';
-import { BotClient } from '../../client/botClient';
-
 import * as ytdl from 'ytdl-core';
+
+import { BotClient } from '../../client/botClient';
 import { Track } from '../../types/music/track';
+import { musicRoleOnly } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -18,6 +19,7 @@ export default class extends Command<BotClient> {
         });
     }
 
+    @musicRoleOnly
     async action(message: Message): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const guildId: string = message.guild.id;
@@ -32,9 +34,12 @@ export default class extends Command<BotClient> {
                     `:fast_forward: Skipping... \`${current.title}\``
                 )) as Message;
 
-                this.client.musicPlayer.streamDispatchers.get(guildId).end();
-
-                msg.edit(`:fast_forward: Skipped \`${current.title}\``);
+                try {
+                    this.client.musicPlayer.streamDispatchers.get(guildId).end();
+                    return msg.edit(`:fast_forward: Skipped \`${current.title}\``);
+                } catch {
+                    return msg.edit(`Could not skip ${current.title}`);
+                }
             } else return message.channel.send(`Not currently playing anything.`);
         } else return message.channel.send('You must join a channel first.');
     }

@@ -19,6 +19,8 @@ export default class extends Command<BotClient> {
     @using(function(message: any, args: string[]): any {
         if (args[0].toLowerCase().includes('modrole')) {
             return resolve('option: String, ...value?: Role').call(this, message, args);
+        } else if (args[0].toLowerCase().includes('musicrole')) {
+            return resolve('option: String, ...value?: Role').call(this, message, args);
         } else return [message, args];
     })
     async action(message: Message, [option, value]: [string, Role | string]): Promise<any> {
@@ -35,6 +37,9 @@ export default class extends Command<BotClient> {
         if (option === 'modrole') {
             message.guild.storage.settings.set('modrole', (value as Role).id);
             message.channel.send('Successfully set moderation role.');
+        } else if (option === 'musicrole') {
+            message.guild.storage.settings.set('musicrole', (value as Role).id);
+            message.channel.send('Successfully set music role.');
         }
     }
 }
