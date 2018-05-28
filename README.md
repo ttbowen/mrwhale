@@ -10,8 +10,10 @@ Pull requests are also welcome. If you find any issues please open a new issue [
 
 - Moderation and server management.
 - Server and global user levelling and ranking.
-- Fun commands such as 8ball, choose, meme, asciify and much more!
-- Play music/audio from YouTube.
+- Fun commands such as conchshell, choose, meme, asciify and much more!
+- Ability to search wolfram, google, wiki and giphy.
+- Classic games including Hangman, minesweeper and rock. paper. scissors.
+- Download and play music from YouTube.
 
 ## Installation
 
@@ -22,5 +24,6 @@ Pull requests are also welcome. If you find any issues please open a new issue [
 - Install [ffmpeg](https://ffmpeg.org/)
 - Run `npm install` to install dependencies.
 - Run `npm run build` to build source.
+- Run `npm run start` to start the bot.
 
 Rename `config.json.example` to `config.json` and enter your api keys. Then rename `db.json.example` to `db.json` and change the urls as necessary.
