@@ -3,6 +3,7 @@ import { Message, Util } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
+import { TrackCacheManager } from '../../client/managers/trackCacheManager';
 import { YouTube } from '../../music/YouTube';
 import { YouTubeVideo } from '../youtube/youtubeVideo';
 import { Search } from './search';
@@ -15,6 +16,7 @@ import { TrackBuilder } from './trackBuilder';
  */
 export class TrackSearch {
     private _searches: Searches;
+    private _trackSelectionCache: TrackCacheManager;
 
     get searches(): Searches {
         return this._searches;
@@ -26,6 +28,7 @@ export class TrackSearch {
      */
     constructor(private client: BotClient) {
         this._searches = {};
+        this._trackSelectionCache = new TrackCacheManager();
     }
 
     /**
@@ -52,8 +55,15 @@ export class TrackSearch {
 
         Util.assignNestedValue(this._searches, [guildId, memberId], newSearch);
 
-        const videos: YouTubeVideo[] = await youtube.search(search, maxResults);
-        await this.populate(guildId, memberId, videos);
+        const cachedTracks: Track[] = this._trackSelectionCache.find(guildId, search.toLowerCase());
+        if (cachedTracks) {
+            newSearch.complete = true;
+            newSearch.results = cachedTracks;
+            Util.assignNestedValue(this._searches, [guildId, memberId], newSearch);
+        } else {
+            const videos: YouTubeVideo[] = await youtube.search(search, maxResults);
+            await this.populate(guildId, memberId, videos);
+        }
     }
 
     private async populate(
@@ -82,5 +92,6 @@ export class TrackSearch {
         search.complete = true;
         search.results = tracks;
         Util.assignNestedValue(this._searches, [guildId, memberId], search);
+        this._trackSelectionCache.add(guildId, search.terms.toLowerCase(), tracks);
     }
 }
