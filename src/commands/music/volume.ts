@@ -1,6 +1,8 @@
 import { Collection, StreamDispatcher, VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
+import { musicRoleOnly } from '../../util/decorators/music';
 
 const { using } = CommandDecorators;
 const { resolve, expect } = Middleware;
@@ -17,6 +19,7 @@ export default class extends Command<BotClient> {
         });
     }
 
+    @musicRoleOnly
     @using(resolve('volume: Number'))
     @using(expect('volume: Number'))
     async action(message: Message, [volume]: [number]): Promise<any> {

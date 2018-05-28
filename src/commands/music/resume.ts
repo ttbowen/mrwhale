@@ -1,8 +1,9 @@
 import { Collection, StreamDispatcher, VoiceChannel, VoiceConnection } from 'discord.js';
+import * as ytdl from 'ytdl-core';
+
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
-
-import * as ytdl from 'ytdl-core';
+import { musicRoleOnly } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -15,6 +16,7 @@ export default class extends Command<BotClient> {
         });
     }
 
+    @musicRoleOnly
     async action(message: Message): Promise<any> {
         const guildId: string = message.guild.id;
         const dispatchers: Collection<string, StreamDispatcher> = this.client.musicPlayer

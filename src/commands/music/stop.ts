@@ -1,7 +1,8 @@
 import { VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
-import { moderatorOnly } from '../../util/decorators/moderation';
+import { musicRoleOnly } from '../../util/decorators/music';
 
 import * as ytdl from 'ytdl-core';
 
@@ -16,7 +17,7 @@ export default class extends Command<BotClient> {
         });
     }
 
-    @moderatorOnly
+    @musicRoleOnly
     async action(message: Message, [video]: [string]): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const connection: VoiceConnection = this.client.musicPlayer.voiceManager.getGuildConnection(
