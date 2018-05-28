@@ -2,6 +2,7 @@ import { RichEmbed } from 'discord.js';
 import * as request from 'request-promise';
 import * as Wolfram from 'wolfram';
 import { Client, Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 
 const config = require('../../../config.json');

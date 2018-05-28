@@ -9,6 +9,7 @@ import {
     Middleware,
     ResourceLoader
 } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 import { moderatorOnly } from '../../util/decorators/moderation';
 import { prompt, PromptResult } from '../../util/prompt';

@@ -1,5 +1,6 @@
 import { Collection, RichEmbed } from 'discord.js';
 import { Command, Lang, Message, ResourceLoader, Util } from 'yamdbf';
+
 import { BotClient } from '../client/botClient';
 
 const resource: ResourceLoader = Lang.createResourceLoader('en_gb');

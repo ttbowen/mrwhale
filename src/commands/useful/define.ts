@@ -1,6 +1,7 @@
 import { RichEmbed } from 'discord.js';
 import * as request from 'request-promise';
 import { Client, Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 import { truncate } from '../../util/truncate';
 

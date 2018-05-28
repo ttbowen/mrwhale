@@ -1,5 +1,6 @@
 import * as request from 'request-promise';
 import { Client, Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 
 const config = require('../../../config.json');

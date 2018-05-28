@@ -1,5 +1,6 @@
 import { GuildMember } from 'discord.js';
 import { ListenerUtil, Message, Util } from 'yamdbf';
+
 import { Database } from '../../database/database';
 import { User } from '../../entity/user';
 import { UserExpStats } from '../../entity/userExpStats';

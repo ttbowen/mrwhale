@@ -1,4 +1,5 @@
 import { Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 
 export default class extends Command<BotClient> {

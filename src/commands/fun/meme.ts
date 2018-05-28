@@ -1,6 +1,7 @@
 import * as bluebird from 'bluebird';
 import * as request from 'request-promise';
 import { ClientStorage, Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 import * as memes from '../../data/memes';
 
