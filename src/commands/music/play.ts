@@ -4,11 +4,11 @@ import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
 import { YouTube } from '../../music/YouTube';
+import { Track } from '../../music/track';
+import { TrackBuilder } from '../../music/trackBuilder';
+import { TrackSearch } from '../../music/trackSearch';
 import { PlayOptions } from '../../types/music/playOptions';
 import { Search } from '../../types/music/search';
-import { Track } from '../../types/music/track';
-import { TrackBuilder } from '../../types/music/trackBuilder';
-import { TrackSearch } from '../../types/music/trackSearch';
 
 export default class extends Command<BotClient> {
     constructor() {

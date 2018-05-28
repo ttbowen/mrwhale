@@ -2,12 +2,12 @@ import { Collection } from 'discord.js';
 import { Message, Util } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
-import { BotClient } from '../../client/botClient';
-import { TrackCacheManager } from '../../client/managers/trackCacheManager';
-import { YouTube } from '../../music/YouTube';
-import { YouTubeVideo } from '../youtube/youtubeVideo';
-import { Search } from './search';
-import { Searches } from './searches';
+import { BotClient } from '../client/botClient';
+import { TrackCacheManager } from '../client/managers/trackCacheManager';
+import { YouTube } from '../music/YouTube';
+import { Search } from '../types/music/search';
+import { Searches } from '../types/music/searches';
+import { YouTubeVideo } from '../types/youtube/youtubeVideo';
 import { Track } from './track';
 import { TrackBuilder } from './trackBuilder';
 

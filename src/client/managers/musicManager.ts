@@ -9,10 +9,10 @@ import {
 import { Guild, GuildSettings, GuildStorage, Message } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
-import { PlayList } from '../../types/music/playList';
+import { PlayList } from '../../music/playList';
+import { Track } from '../../music/track';
+import { TrackSearch } from '../../music/trackSearch';
 import { PlayOptions } from '../../types/music/playOptions';
-import { Track } from '../../types/music/track';
-import { TrackSearch } from '../../types/music/trackSearch';
 import { BotClient } from '../botClient';
 import { VoiceManager } from './voiceManager';
 

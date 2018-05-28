@@ -1,4 +1,4 @@
-import { Track } from './track';
+import { Track } from '../../music/track';
 
 /**
  * Represents cached track selections.

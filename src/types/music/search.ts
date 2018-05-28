@@ -1,8 +1,8 @@
 import { Message } from 'yamdbf';
 
 import { GuildMember } from 'discord.js';
+import { Track } from '../../music/track';
 import { YouTubeVideo } from '../youtube/youtubeVideo';
-import { Track } from './track';
 
 /**
  * Represents a {@link Track} search.

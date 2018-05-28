@@ -1,6 +1,6 @@
 import { Util } from 'yamdbf';
 
-import { Track } from '../../types/music/track';
+import { Track } from '../../music/track';
 import { TrackSelectionCache } from '../../types/music/trackSelectionCache';
 
 /**

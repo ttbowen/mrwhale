@@ -3,7 +3,7 @@ import { Command, Message } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
-import { Track } from '../../types/music/track';
+import { Track } from '../../music/track';
 import { musicRoleOnly } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {

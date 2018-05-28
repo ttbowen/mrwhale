@@ -8,9 +8,9 @@ import {
 import { Command, CommandDecorators, Message, Middleware, Util } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';
+import { Track } from '../../music/track';
 import { PlayOptions } from '../../types/music/playOptions';
 import { Search } from '../../types/music/search';
-import { Track } from '../../types/music/track';
 
 const { using } = CommandDecorators;
 const { resolve, expect } = Middleware;

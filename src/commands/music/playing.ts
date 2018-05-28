@@ -1,10 +1,10 @@
 import { RichEmbed, StreamDispatcher } from 'discord.js';
-import { Command, Message } from 'yamdbf';
-import { BotClient } from '../../client/botClient';
-import { Track } from '../../types/music/track';
-
 import * as moment from 'moment';
 import 'moment-duration-format';
+import { Command, Message } from 'yamdbf';
+
+import { BotClient } from '../../client/botClient';
+import { Track } from '../../music/track';
 
 export default class extends Command<BotClient> {
     constructor() {
