@@ -14,8 +14,8 @@ To contribute, you should do the following:
 8. Go through the installation guide on the README.
 9. Make your code changes and commit them.
 10. Push your changes to your forked remote `$ git push -u origin your-command`.
-11. In your browser visit your forked repository and click "Compare & pull request" under "Your recently pushed branches:".
-12. In your pull request describe a bit about your branch and the changes you made. Once you are happy click "Create pull request".
+11. In your browser visit your forked repository and click **"Compare & pull request"** under **"Your recently pushed branches:**".
+12. In your pull request describe a bit about your branch and the changes you made. Once you are happy click **"Create pull request"**.
 
 ## General guidelines
 
@@ -33,7 +33,7 @@ This project uses TSLint to enforce a consistent coding style throughout the pro
 
 - Always use `const` and `let`. `var` will be rejected by the linter.
 - Class names should start with an uppercase letter. e.g. `AwesomeCommand`.
-- Functions, methods, variables and parameters should be `camalCase`.
+- Functions, methods, variables and parameters should be `camelCase`.
 - External imports should be separated from our imports and be in alphabetical order.
 - `public` methods should have jsdocs. However don't add jsdocs for overridden methods on your `Command` classes.
 
