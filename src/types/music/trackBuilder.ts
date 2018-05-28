@@ -53,7 +53,7 @@ export class TrackBuilder {
 
     /**
      * Set the video duration.
-     * @param value The video duration in miliseconds.
+     * @param value The video duration in seconds.
      */
     setDuration(value: number): TrackBuilder {
         this._duration = value;
