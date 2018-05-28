@@ -7,7 +7,7 @@ export default class extends Command<BotClient> {
     constructor() {
         super({
             name: 'join',
-            desc: 'Join the current voice channel.',
+            desc: 'Join the voice channel you are currently in.',
             usage: '<prefix>join',
             group: 'music',
             guildOnly: true
