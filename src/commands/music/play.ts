@@ -22,6 +22,37 @@ export default class extends Command<BotClient> {
         });
     }
 
+    private async getTrackSelection(
+        message: Message,
+        guildId: string,
+        memberId: string,
+        query: string
+    ): Promise<void> {
+        const current: Search = Util.getNestedValue(this.client.musicPlayer.trackSearch.searches, [
+            guildId,
+            memberId
+        ]);
+        if (current && !current.complete) return;
+
+        try {
+            await this.client.musicPlayer.trackSearch.search(message, query);
+            const search: Search = Util.getNestedValue(
+                this.client.musicPlayer.trackSearch.searches,
+                [guildId, memberId]
+            );
+
+            let response = '**Please select a track using the `select 1-5` command:**\n';
+            for (let i = 0; i < search.results.length; i++) {
+                response += `**${i + 1}. **`;
+                response += `${search.results[i].title} by ${search.results[i].author}\n`;
+            }
+
+            search.msg.edit(response);
+        } catch {
+            current.msg.edit('Could not search this.');
+        }
+    }
+
     async action(message: Message, args: string[]): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const guildId: string = message.guild.id;
@@ -56,30 +87,15 @@ export default class extends Command<BotClient> {
             if (this.client.musicPlayer.streamDispatchers.has(guildId)) {
                 this.client.musicPlayer.playList.add(guildId, track);
                 return message.channel.send(`Added \`${track.title}\` to the playlist.`);
-            } else {
+            }
+
+            try {
                 this.client.musicPlayer.play(track, playOptions);
                 return message.channel.send(`**Now playing** :notes: \`${track.title}\``);
+            } catch {
+                return message.channel.send('Could not play the audio.');
             }
         }
-
-        const current: Search = Util.getNestedValue(this.client.musicPlayer.trackSearch.searches, [
-            guildId,
-            memberId
-        ]);
-        if (current && !current.complete) return;
-
-        await this.client.musicPlayer.trackSearch.search(message, videoOrSearch);
-        const search: Search = Util.getNestedValue(this.client.musicPlayer.trackSearch.searches, [
-            guildId,
-            memberId
-        ]);
-
-        let response = '**Please select a track using the `select 1-5` command:**\n';
-        for (let i = 0; i < search.results.length; i++) {
-            response += `**${i + 1}. **`;
-            response += `${search.results[i].title} by ${search.results[i].author}\n`;
-        }
-
-        search.msg.edit(response);
+        await this.getTrackSelection(message, guildId, memberId, videoOrSearch);
     }
 }
