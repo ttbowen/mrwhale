@@ -99,17 +99,14 @@ export class ModerationManager {
             ? `\`${message.guild.roles.get(await settings.get('modrole')).name}\``
             : 'mod';
 
-        if (!message.guild)
-            return await message.channel.send('Error: Command cannot be called from DM.');
+        if (!message.guild) return await message.channel.send('Command cannot be called from DM.');
 
         if (!await this.hasSetModRole(message.guild))
             return message.channel.send(
-                `Error: This guild has no mod role set. Use \`${prefix}setup modrole <role>\` to set one`
+                `This guild has no mod role set. Use \`${prefix}setup modrole <role>\` to set one`
             );
 
         if (!await this.hasModRole(message.member))
-            return message.channel.send(
-                `Error: You need the ${modRoleName} role to use this command.`
-            );
+            return message.channel.send(`You need the ${modRoleName} role to use this command.`);
     }
 }
