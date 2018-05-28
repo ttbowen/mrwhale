@@ -35,9 +35,12 @@ export default class extends Command<BotClient> {
 
             const msg = (await message.channel.send(':arrow_forward: Resuming...')) as Message;
 
-            this.client.musicPlayer.resume(connection);
-
-            msg.edit(':arrow_forward: Resumed.');
+            try {
+                this.client.musicPlayer.resume(connection);
+                return msg.edit(':arrow_forward: Resumed.');
+            } catch {
+                return msg.edit('Could not resume the audio.');
+            }
         } else return message.channel.send('You need to join a voice channel first.');
     }
 }

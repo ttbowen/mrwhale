@@ -32,16 +32,16 @@ export default class extends Command<BotClient> {
             if (!this.client.musicPlayer.voiceManager.isOnChannel(channel))
                 return message.channel.send('You must be in the same channel first.');
 
-            try {
-                if (!this.client.musicPlayer.streamDispatchers.has(message.guild.id))
-                    return message.channel.send('There is no audio playing.');
+            if (!this.client.musicPlayer.streamDispatchers.has(message.guild.id))
+                return message.channel.send('There is no audio playing.');
 
+            try {
                 this.client.musicPlayer.setVolume(message.guild.id, volume);
                 return message.channel.send(
                     `Set volume to ${this.client.musicPlayer.getVolume(message.guild.id)}%`
                 );
             } catch {
-                message.channel.send('Could not set the volume.');
+                return message.channel.send('Could not set the volume.');
             }
         } else return message.channel.send('You need to join a voice channel first.');
     }

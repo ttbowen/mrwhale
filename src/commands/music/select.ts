@@ -62,8 +62,12 @@ export default class extends Command<BotClient> {
                     this.client.musicPlayer.playList.add(guildId, selected);
                     search.msg.edit(`Added \`${selected.title}\` to the playlist.`);
                 } else {
-                    this.client.musicPlayer.play(selected, playOptions);
-                    search.msg.edit(`**Now playing** :notes: \`${selected.title}\``);
+                    try {
+                        this.client.musicPlayer.play(selected, playOptions);
+                        search.msg.edit(`**Now playing** :notes: \`${selected.title}\``);
+                    } catch {
+                        search.msg.edit('Could not play the audio.');
+                    }
                 }
                 Util.removeNestedValue(this.client.musicPlayer.trackSearch.searches, [
                     guildId,

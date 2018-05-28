@@ -35,9 +35,12 @@ export default class extends Command<BotClient> {
 
             const msg = (await message.channel.send(':pause_button: Pausing...')) as Message;
 
-            this.client.musicPlayer.pause(connection);
-
-            msg.edit(':pause_button: Paused.');
+            try {
+                this.client.musicPlayer.pause(connection);
+                return msg.edit(':pause_button: Paused.');
+            } catch {
+                return msg.edit('Could not pause the audio.');
+            }
         } else return message.channel.send('You need to join a voice channel first.');
     }
 }

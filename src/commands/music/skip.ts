@@ -34,9 +34,12 @@ export default class extends Command<BotClient> {
                     `:fast_forward: Skipping... \`${current.title}\``
                 )) as Message;
 
-                this.client.musicPlayer.streamDispatchers.get(guildId).end();
-
-                msg.edit(`:fast_forward: Skipped \`${current.title}\``);
+                try {
+                    this.client.musicPlayer.streamDispatchers.get(guildId).end();
+                    return msg.edit(`:fast_forward: Skipped \`${current.title}\``);
+                } catch {
+                    return msg.edit(`Could not skip ${current.title}`);
+                }
             } else return message.channel.send(`Not currently playing anything.`);
         } else return message.channel.send('You must join a channel first.');
     }

@@ -1,10 +1,9 @@
 import { VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
+import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
 import { musicRoleOnly } from '../../util/decorators/music';
-
-import * as ytdl from 'ytdl-core';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -28,9 +27,12 @@ export default class extends Command<BotClient> {
             if (!this.client.musicPlayer.voiceManager.isOnChannel(channel))
                 return message.channel.send('You must be in the same channel first.');
 
-            this.client.musicPlayer.stop(connection);
-
-            return message.channel.send(`:stop_button: Stopping audio stream.`);
+            try {
+                this.client.musicPlayer.stop(connection);
+                return message.channel.send(`:stop_button: Stopping audio stream.`);
+            } catch {
+                return message.channel.send('Could not stop the audio stream.');
+            }
         } else return message.channel.send('You need to join a voice channel first.');
     }
 }
