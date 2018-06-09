@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+
+import { Dictionary } from './dictionary';
 
 @Entity()
 export class User {
@@ -8,5 +10,8 @@ export class User {
     @Column() avatarUrl: string;
     @Column({ default: 0 })
     totalExp: number;
-    @Column() expLastUpdated: Date;
+    @Column({ nullable: true })
+    expLastUpdated: Date;
+    @OneToMany(type => Dictionary, definition => definition.user)
+    definitions: Dictionary[];
 }
