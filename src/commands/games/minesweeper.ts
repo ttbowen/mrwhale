@@ -1,5 +1,6 @@
 import { Collection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 import { lose, win } from '../../data/minesweeperCommentary';
 import { MinesweeperGame } from '../../types/games/minesweeperGame';
@@ -39,7 +40,7 @@ export default class extends Command<BotClient> {
         const authorId: string = message.author.id;
 
         if (this._games.has(channelId)) {
-            return message.channel.sendMessage(
+            return message.channel.send(
                 'A game of minesweeper is already running on this channel!'
             );
         } else {
@@ -84,15 +85,13 @@ export default class extends Command<BotClient> {
                 this._games.set(channelId, game);
                 game.start();
             } else {
-                return message.channel.sendMessage(
+                return message.channel.send(
                     'Please pass in a valid difficulty modifier or none at all!' +
                         '\nvalid difficulties: easy | normal | hard'
                 );
             }
 
-            return message.channel.sendMessage(
-                this.constructGameScreen(this._games.get(channelId))
-            );
+            return message.channel.send(this.constructGameScreen(this._games.get(channelId)));
         }
     }
 
@@ -102,14 +101,12 @@ export default class extends Command<BotClient> {
         if (this._games.has(channelId)) {
             const game: MinesweeperGame = this._games.get(channelId);
             if (game.owner !== authorId) {
-                return message.channel.sendMessage(
-                    'You have to be the game starter to end the game!'
-                );
+                return message.channel.send('You have to be the game starter to end the game!');
             } else {
                 game.forceLose();
                 game.revealAllTiles();
-                message.channel.sendMessage('```' + game.playingFieldString + '```');
-                message.channel.sendMessage(
+                message.channel.send('```' + game.playingFieldString + '```');
+                message.channel.send(
                     'You revealed ' +
                         game.revealedTileCount.toString() +
                         ' out of ' +
@@ -117,10 +114,10 @@ export default class extends Command<BotClient> {
                         ' tile.'
                 );
                 const lossModifier = lose[Math.round(Math.random() * (lose.length - 1))];
-                return message.channel.sendMessage('Game finished... You lost. ' + lossModifier);
+                return message.channel.send('Game finished... You lost. ' + lossModifier);
             }
         } else {
-            return message.channel.sendMessage("You can't end the game when no game is running.");
+            return message.channel.send("You can't end the game when no game is running.");
         }
     }
 
@@ -147,9 +144,7 @@ export default class extends Command<BotClient> {
     private async reveal(message: Message, args: any[]): Promise<any> {
         const channelId: string = message.channel.id;
         if (!this._games.has(channelId)) {
-            return message.channel.sendMessage(
-                'No game of minesweeper is running on this channel!'
-            );
+            return message.channel.send('No game of minesweeper is running on this channel!');
         }
 
         const game: MinesweeperGame = this._games.get(channelId);
@@ -199,13 +194,13 @@ export default class extends Command<BotClient> {
         if (game.gameOver) {
             if (game.won) {
                 game.revealAllTiles();
-                message.channel.sendMessage('```' + game.playingFieldString + '```');
+                message.channel.send('```' + game.playingFieldString + '```');
                 const winModifier = win[Math.round(Math.random() * (win.length - 1))];
-                return message.channel.sendMessage('Game finished... You won! ' + winModifier);
+                return message.channel.send('Game finished... You won! ' + winModifier);
             } else if (game.lost) {
                 game.revealAllTiles();
-                message.channel.sendMessage('```' + game.playingFieldString + '```');
-                message.channel.sendMessage(
+                message.channel.send('```' + game.playingFieldString + '```');
+                message.channel.send(
                     'You revealed ' +
                         game.revealedTileCount.toString() +
                         ' out of ' +
@@ -213,7 +208,7 @@ export default class extends Command<BotClient> {
                         ' tile.'
                 );
                 const lossModifier = lose[Math.round(Math.random() * (lose.length - 1))];
-                return message.channel.sendMessage('Game finished... You lost. ' + lossModifier);
+                return message.channel.send('Game finished... You lost. ' + lossModifier);
             }
         }
 
@@ -223,9 +218,7 @@ export default class extends Command<BotClient> {
     private async flag(message: Message, args: any[]): Promise<any> {
         const channelId: string = message.channel.id;
         if (!this._games.has(channelId)) {
-            return message.channel.sendMessage(
-                'No game of minesweeper is running on this channel!'
-            );
+            return message.channel.send('No game of minesweeper is running on this channel!');
         }
 
         const game: MinesweeperGame = this._games.get(channelId);
@@ -278,9 +271,7 @@ export default class extends Command<BotClient> {
     private async unflag(message: Message, args: any[]): Promise<any> {
         const channelId: string = message.channel.id;
         if (!this._games.has(channelId)) {
-            return message.channel.sendMessage(
-                'No game of minesweeper is running on this channel!'
-            );
+            return message.channel.send('No game of minesweeper is running on this channel!');
         }
 
         const game: MinesweeperGame = this._games.get(channelId);
