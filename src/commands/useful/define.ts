@@ -3,6 +3,8 @@ import * as request from 'request-promise';
 import { Client, Command, Message } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';
+import { Database } from '../../database/database';
+import { Dictionary } from '../../entity/dictionary';
 import { truncate } from '../../util/truncate';
 
 export default class extends Command<BotClient> {
@@ -18,6 +20,7 @@ export default class extends Command<BotClient> {
 
     async action(message: Message, args: string[]): Promise<any> {
         const phrase = args.join(' ');
+        const embed = new RichEmbed();
 
         if (!phrase) return message.channel.send('You must pass word/phrase to define.');
 
@@ -30,10 +33,22 @@ export default class extends Command<BotClient> {
             json: true
         };
 
+        const defintion: Dictionary = await Database.connection
+            .getRepository(Dictionary)
+            .findOne({ word: phrase.toLowerCase() });
+
+        if (defintion) {
+            embed.setTitle(`Result for ${phrase}`);
+            embed.setAuthor(message.author.username, message.author.avatarURL);
+
+            embed.addField('Definition', `${defintion.definition}`);
+            embed.addField('Example', `${defintion.example}`);
+            return message.channel.send({ embed });
+        }
+
         return request(options).then(body => {
             const defmax = 1500;
             const examplemax = 400;
-            const embed = new RichEmbed();
 
             embed.setTitle(`Result for ${phrase}`);
             embed.setAuthor(message.author.username, message.author.avatarURL);
