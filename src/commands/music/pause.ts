@@ -3,7 +3,6 @@ import { Command, Message } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
-import { musicRoleOnly } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -16,7 +15,6 @@ export default class extends Command<BotClient> {
         });
     }
 
-    @musicRoleOnly
     async action(message: Message): Promise<any> {
         const guildId: string = message.guild.id;
         const dispatchers: Collection<string, StreamDispatcher> = this.client.musicPlayer
