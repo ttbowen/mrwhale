@@ -3,7 +3,7 @@ import { Command, Message } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
-import { musicRoleOnly } from '../../util/decorators/music';
+import { restrictedMusicCommand } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -16,7 +16,7 @@ export default class extends Command<BotClient> {
         });
     }
 
-    @musicRoleOnly
+    @restrictedMusicCommand
     async action(message: Message, [video]: [string]): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const connection: VoiceConnection = this.client.musicPlayer.voiceManager.getGuildConnection(
