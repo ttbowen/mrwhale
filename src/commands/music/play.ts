@@ -47,9 +47,9 @@ export default class extends Command<BotClient> {
                 response += `${search.results[i].title} by ${search.results[i].author}\n`;
             }
 
-            search.msg.edit(response);
+            if (search && search.msg) search.msg.edit(response);
         } catch {
-            current.msg.edit('Could not search this.');
+            message.channel.send('Could not search this.');
         }
     }
 
