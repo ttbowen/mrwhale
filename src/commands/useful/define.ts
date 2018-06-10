@@ -33,21 +33,23 @@ export default class extends Command<BotClient> {
             json: true
         };
 
-        const defintion: Dictionary = await Database.connection
+        const definition: Dictionary = await Database.connection
             .getRepository(Dictionary)
             .findOne({ word: phrase.toLowerCase() });
 
-        if (defintion) {
+        if (definition) {
             embed.setTitle(`Result for ${phrase}`);
             embed.setAuthor(message.author.username, message.author.avatarURL);
 
-            embed.addField('Definition', `${defintion.definition}`);
-            embed.addField('Example', `${defintion.example}`);
+            embed.addField('Definition', `${definition.definition}`);
+
+            if (definition.example) embed.addField('Example', `${definition.example}`);
+
             return message.channel.send({ embed });
         }
 
         return request(options).then(body => {
-            const defmax = 1500;
+            const defmax = 1024;
             const examplemax = 400;
 
             embed.setTitle(`Result for ${phrase}`);
