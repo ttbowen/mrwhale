@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
-import { lose, win } from '../../data/minesweeperCommentary';
+import { lose, win } from '../../data/minesweeper';
 import { MinesweeperGame } from '../../types/games/minesweeperGame';
 import { MinesweeperOptions } from '../../types/games/minesweeperOptions';
 
