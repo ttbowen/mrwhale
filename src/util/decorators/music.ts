@@ -4,12 +4,12 @@ import { Command } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 
 /**
- * Decorator to limit users to use a command with the music role only.
+ * Decorator to limit users to use a command with the music and mod roles only.
  * @param target
  * @param key
  * @param descriptor
  */
-export function musicRoleOnly(
+export function restrictedMusicCommand(
     target: Command<BotClient>,
     key: string,
     descriptor: PropertyDescriptor
