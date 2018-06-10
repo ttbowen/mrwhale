@@ -2,7 +2,7 @@ import { Collection, StreamDispatcher, VoiceChannel, VoiceConnection } from 'dis
 import { Command, Message } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';
-import { musicRoleOnly } from '../../util/decorators/music';
+import { restrictedMusicCommand } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -15,7 +15,7 @@ export default class extends Command<BotClient> {
         });
     }
 
-    @musicRoleOnly
+    @restrictedMusicCommand
     async action(message: Message): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const connection: VoiceConnection = this.client.musicPlayer.voiceManager.getGuildConnection(
