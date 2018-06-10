@@ -62,7 +62,7 @@ export class LevelManager {
             player = new User();
             player.id = member.id;
             player.discriminator = member.user.discriminator;
-            player.avatarUrl = member.user.avatarURL;
+            player.avatarUrl = member.user.avatarURL || member.user.defaultAvatarURL;
             player.username = member.user.username;
             player.totalExp = 0;
         }
