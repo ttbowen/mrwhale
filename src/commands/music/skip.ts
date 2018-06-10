@@ -4,7 +4,6 @@ import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
 import { Track } from '../../music/track';
-import { musicRoleOnly } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -19,7 +18,6 @@ export default class extends Command<BotClient> {
         });
     }
 
-    @musicRoleOnly
     async action(message: Message): Promise<any> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const guildId: string = message.guild.id;
