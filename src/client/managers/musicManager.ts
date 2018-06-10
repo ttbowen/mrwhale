@@ -1,6 +1,7 @@
 import {
     Collection,
     GuildMember,
+    Role,
     StreamDispatcher,
     TextChannel,
     VoiceChannel,
@@ -14,6 +15,7 @@ import { Track } from '../../music/track';
 import { TrackSearch } from '../../music/trackSearch';
 import { PlayOptions } from '../../types/music/playOptions';
 import { BotClient } from '../botClient';
+import { ModerationManager } from './moderationManager';
 import { VoiceManager } from './voiceManager';
 
 /**
@@ -173,9 +175,17 @@ export class MusicManager {
      * @param message The message which contains the command call.
      */
     async canCallMusicCommand(message: Message): Promise<boolean> {
-        if (!message.guild) return false;
-        if (!await this.hasSetMusicRole(message.guild)) return false;
-        if (!await this.hasMusicRole(message.member)) return false;
+        const guild: Guild = message.guild;
+        const member: GuildMember = message.member;
+        const moderation: ModerationManager = this.client.moderation;
+        const hasMusicSet: boolean = await this.hasSetMusicRole(guild);
+        const hasMusic: boolean = await this.hasMusicRole(message.member);
+
+        if (!guild) return false;
+        if (!await moderation.hasSetModRole(guild) && !await this.hasSetMusicRole(guild))
+            return false;
+
+        if (!await moderation.hasModRole(member) && !await this.hasMusicRole(member)) return false;
 
         return true;
     }
@@ -186,20 +196,27 @@ export class MusicManager {
      */
     async error(message: Message): Promise<Message | Message[]> {
         const settings: GuildSettings = await message.guild.storage.settings;
-        const hasMusicRole: boolean = await message.guild.storage.settings.exists('musicrole');
+        const guild: Guild = await message.guild;
+        const member: GuildMember = await message.member;
+        const moderation: ModerationManager = this.client.moderation;
+        const roles: Collection<string, Role> = message.guild.roles;
         const prefix: string = await this.client.getPrefix(message.guild);
-        const musicRoleName: string = hasMusicRole
-            ? `\`${message.guild.roles.get(await settings.get('musicrole')).name}\``
+
+        const musicName: string = (await this.hasSetMusicRole(guild))
+            ? `${roles.get(await settings.get('musicrole')).name}`
+            : 'music';
+        const modName: string = (await moderation.hasSetModRole(guild))
+            ? `${roles.get(await settings.get('modrole')).name}`
             : 'mod';
 
         if (!message.guild) return await message.channel.send('Command cannot be called from DM.');
 
-        if (!await this.hasSetMusicRole(message.guild))
-            return message.channel.send(
-                `This guild has no music role set. Use \`${prefix}setup musicrole <role>\` to set one`
-            );
+        if (!await this.hasSetMusicRole(guild) && !await moderation.hasSetModRole(guild))
+            return message.channel.send(`This guild has no music or mod role set.`);
 
-        if (!await this.hasMusicRole(message.member))
-            return message.channel.send(`You need the ${musicRoleName} role to use this command.`);
+        if (!await this.hasMusicRole(member) && !await moderation.hasModRole(member))
+            return message.channel.send(
+                `You need the roles \`${musicName}\` or \`${modName}\` to use this command.`
+            );
     }
 }
