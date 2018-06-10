@@ -3,7 +3,6 @@ import * as ytdl from 'ytdl-core';
 
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
-import { musicRoleOnly } from '../../util/decorators/music';
 
 export default class extends Command<BotClient> {
     constructor() {
@@ -16,7 +15,6 @@ export default class extends Command<BotClient> {
         });
     }
 
-    @musicRoleOnly
     async action(message: Message): Promise<any> {
         const guildId: string = message.guild.id;
         const dispatchers: Collection<string, StreamDispatcher> = this.client.musicPlayer
@@ -25,6 +23,9 @@ export default class extends Command<BotClient> {
         const connection: VoiceConnection = this.client.musicPlayer.voiceManager.getGuildConnection(
             message.guild
         );
+
+        if (!dispatchers.get(guildId))
+            return message.channel.send('No audio is playing to resume.');
 
         if (!dispatchers.has(guildId) && dispatchers.get(guildId).paused)
             return message.channel.send('The player is already playing.');
