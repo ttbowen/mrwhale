@@ -28,6 +28,12 @@ export default class extends Command<BotClient> {
 
             if (this.client.musicPlayer.streamDispatchers.has(guildId)) {
                 const current: Track = this.client.musicPlayer.playList.getCurrentTrack(guildId);
+
+                if (message.member.id !== current.requestedBy.id)
+                    return message.channel.send(
+                        'You must have requested this track in order to skip. Use `voteskip`.'
+                    );
+
                 const msg = (await message.channel.send(
                     `:fast_forward: Skipping... \`${current.title}\``
                 )) as Message;
