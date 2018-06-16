@@ -1,4 +1,4 @@
-import { Collection, Guild } from 'discord.js';
+import { Collection, Guild, GuildMember } from 'discord.js';
 
 import { BotClient } from '../client/botClient';
 import { Track } from './track';
@@ -10,9 +10,12 @@ export class PlayList {
     private _playList: Collection<string, Track[]>;
     private _currentTrack: Collection<string, Track>;
 
+    readonly skipVoters: Collection<string, Map<string, GuildMember>>;
+
     constructor() {
         this._playList = new Collection<string, Track[]>();
         this._currentTrack = new Collection<string, Track>();
+        this.skipVoters = new Collection<string, Map<string, GuildMember>>();
     }
 
     /**
@@ -81,7 +84,7 @@ export class PlayList {
      * @param guild The guild identifier.
      */
     next(guildId: string): Track {
-        const next: Track = this._playList.get(guildId).shift();
-        return next;
+        this.skipVoters.get(guildId).clear();
+        return this._playList.get(guildId).shift();
     }
 }
