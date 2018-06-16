@@ -7,7 +7,7 @@ import {
     VoiceChannel,
     VoiceConnection
 } from 'discord.js';
-import { Guild, GuildSettings, GuildStorage, Message } from 'yamdbf';
+import { Guild, GuildSettings, GuildStorage, ListenerUtil, Message, Util } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { PlayList } from '../../music/playList';
@@ -17,6 +17,8 @@ import { PlayOptions } from '../../types/music/playOptions';
 import { BotClient } from '../botClient';
 import { ModerationManager } from './moderationManager';
 import { VoiceManager } from './voiceManager';
+
+const { on, once, registerListeners } = ListenerUtil;
 
 /**
  * Manager for music commands.
@@ -36,6 +38,7 @@ export class MusicManager {
         this.streamDispatchers = new Collection<string, StreamDispatcher>();
         this.playList = new PlayList();
         this.trackSearch = new TrackSearch(this.client);
+        registerListeners(this.client, this);
     }
 
     /**
@@ -218,5 +221,20 @@ export class MusicManager {
             return message.channel.send(
                 `You need the roles \`${musicName}\` or \`${modName}\` to use this command.`
             );
+    }
+
+    @on('voiceStateUpdate')
+    private _onGuildMemberVoidLeave(oldMember: GuildMember, newMember: GuildMember): void {
+        const guildId: string = newMember.guild.id;
+        const newMemberChannel: VoiceChannel = newMember.voiceChannel;
+        const oldMemberChannel: VoiceChannel = oldMember.voiceChannel;
+
+        if (!newMemberChannel) {
+            const skipVoters: Map<
+                string,
+                GuildMember
+            > = this.client.musicPlayer.playList.skipVoters.get(guildId);
+            if (skipVoters && skipVoters.has(newMember.id)) skipVoters.delete(newMember.id);
+        }
     }
 }
