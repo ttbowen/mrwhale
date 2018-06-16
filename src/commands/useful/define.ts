@@ -19,11 +19,8 @@ export default class extends Command<BotClient> {
     }
 
     async action(message: Message, args: string[]): Promise<any> {
-        const phrase = args.join(' ');
-        const embed = new RichEmbed();
-
-        if (!phrase) return message.channel.send('You must pass word/phrase to define.');
-
+        const phrase: string = args.join(' ');
+        const embed: RichEmbed = new RichEmbed();
         const options = {
             url: `https://api.urbandictionary.com/v0/define?`,
             qs: {
@@ -33,9 +30,11 @@ export default class extends Command<BotClient> {
             json: true
         };
 
+        if (!phrase) return message.channel.send('You must pass word/phrase to define.');
+
         const definition: Dictionary = await Database.connection
             .getRepository(Dictionary)
-            .findOne({ word: phrase.toLowerCase() });
+            .findOne({ word: phrase.toLowerCase(), guildId: message.guild.id });
 
         if (definition) {
             embed.setTitle(`Result for ${phrase}`);
