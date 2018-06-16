@@ -27,7 +27,6 @@ describe('uptime', () => {
 
     it('should respond with bot uptime', () => {
         const message: Message = new Message(textChannelStub, null, clientStub);
-        console.log(cmd.client.uptime);
         const uptime: string = Time.difference(clientStub.uptime * 2, clientStub.uptime).toString();
 
         cmd.action(message);
