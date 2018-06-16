@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { createConnection, Connection } from 'typeorm';
+import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 import { logger, Logger } from 'yamdbf';
 
 /**
@@ -34,9 +34,10 @@ export class Database {
     /**
      * Initialise the database connection.
      */
-    async init(): Promise<void> {
+    async init(connectionOptions?: ConnectionOptions): Promise<void> {
         try {
-            this.connection = await createConnection();
+            if (connectionOptions) this.connection = await createConnection(connectionOptions);
+            else this.connection = await createConnection();
         } catch (err) {
             await this.logger.error(`Failed to connect to database. Error: ${err}`);
             process.exit();
