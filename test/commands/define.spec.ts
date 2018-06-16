@@ -3,9 +3,14 @@ import { Client, RichEmbed, TextChannel, User } from 'discord.js';
 import * as path from 'path';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { Message } from 'yamdbf';
+import { createConnection, Connection } from 'typeorm';
+import { Guild, Message } from 'yamdbf';
 
 import * as command from '../../src/commands/useful/define';
+import { Database } from '../../src/database/database';
+import { Dictionary } from '../../src/entity/dictionary';
+import * as BotUser from '../../src/entity/user';
+import { UserExpStats } from '../../src/entity/userExpStats';
 import { truncate } from '../../src/util/truncate';
 import { loadFixtures } from '../helpers/loadFixtures';
 
@@ -29,11 +34,24 @@ describe('define', () => {
         requestStub = sandbox.stub(request, 'Request');
     });
 
+    beforeEach(async () => {
+        await Database.instance().init({
+            name: 'test',
+            type: 'sqljs',
+            entities: [BotUser.User, UserExpStats, Dictionary],
+            dropSchema: true,
+            synchronize: true
+        });
+    });
+
+    afterEach(() => Database.connection.close());
+
     after(() => sandbox.restore());
 
-    it('should respond with a definition', async () => {
+    it('should respond with a definition from urban dictionary', async () => {
         const phrase = 'whale';
         const definition = JSON.parse(fixtures.define);
+        textChannelStub.guild = sinon.createStubInstance(Guild);
         const message: Message = new Message(textChannelStub, null, clientStub);
         message.author = sinon.createStubInstance(User);
         const embed = new RichEmbed();
@@ -50,6 +68,7 @@ describe('define', () => {
 
     it('should call the api with the correct options', async () => {
         const phrase = 'whale';
+        textChannelStub.guild = sinon.createStubInstance(Guild);
         const message: Message = new Message(textChannelStub, null, clientStub);
         const options = {
             callback: undefined,
@@ -79,6 +98,7 @@ describe('define', () => {
 
     it('should let the user know if a word cannot be defined', async () => {
         const message: Message = new Message(textChannelStub, null, clientStub);
+        textChannelStub.guild = sinon.createStubInstance(Guild);
         message.author = sinon.createStubInstance(User);
         requestStub.resolves(JSON.parse(fixtures.define_no_results));
 
