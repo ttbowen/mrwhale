@@ -34,7 +34,7 @@ export default class extends Command<BotClient> {
         const compChoice: number = Math.random();
         let compChoiceStr = '';
 
-        const validChoices: RegExp = /(rock|paper|scissors)/;
+        const validChoices: RegExp = /\b(rock|paper|scissors)\b/;
 
         if (!message.content.match(validChoices))
             return message.channel.send('Please pass rock, paper, scissors.');
