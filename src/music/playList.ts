@@ -84,7 +84,7 @@ export class PlayList {
      * @param guild The guild identifier.
      */
     next(guildId: string): Track {
-        this.skipVoters.get(guildId).clear();
+        if (this.skipVoters.has(guildId)) this.skipVoters.get(guildId).clear();
         return this._playList.get(guildId).shift();
     }
 }
