@@ -28,23 +28,31 @@ export default class extends Command<BotClient> {
         if (current) {
             embed.addField(
                 '*Now Playing*',
-                `${current.title} | ${moment
+                `[${current.title}](${current.url}) | \`${moment
                     .duration(current.duration * miliseconds)
-                    .format('h:mm:ss')} Requested by: ${current.requestedBy.user.username}`
+                    .format('h:mm:ss')} Requested by: ${current.requestedBy.user.username}\``
             );
         }
 
         if (tracks && tracks.length !== 0) {
             let upNext = '';
+            let calculatedTotalDuration = 0;
             for (let i = 0; i < tracks.length; i++) {
                 const title: string = tracks[i].title;
                 const username: string = tracks[i].requestedBy.user.username;
                 const duration: moment.Duration = moment.duration(tracks[i].duration * miliseconds);
-                upNext += `${i + 1}. ${tracks[i].title} | ${duration.format(
+                upNext += `${i + 1}. [${tracks[i].title}](${tracks[i].url}) | \`${duration.format(
                     'h:mm:ss'
-                )}  - Requested by: ${username}\n`;
+                )} Requested by: ${username}\`\n`;
+                calculatedTotalDuration += tracks[i].duration;
             }
-            embed.addField('Up next :track_next:', upNext);
+
+            const totalDuration: string = moment
+                .duration(calculatedTotalDuration * miliseconds)
+                .format('h:mm:ss')
+                .padStart(4, '0:0');
+            embed.addField('Up next :arrow_up:', upNext);
+            embed.setFooter(`Tracks in queue: ${tracks.length} | Total length: ${totalDuration}`);
         } else embed.addField('There is nothing in the queue', ':track_next:');
 
         return message.channel.send({ embed });
