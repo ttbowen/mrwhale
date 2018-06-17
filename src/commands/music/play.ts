@@ -1,4 +1,5 @@
-import { TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
+import { RichEmbed, TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
+import * as moment from 'moment';
 import { Command, Message, Util } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
@@ -18,7 +19,7 @@ export default class extends Command<BotClient> {
             usage: '<prefix>play <url|search>',
             group: 'music',
             guildOnly: true,
-            aliases: ['p', 'yt']
+            aliases: ['p', 'yt', 'request']
         });
     }
 
@@ -86,7 +87,17 @@ export default class extends Command<BotClient> {
 
             if (this.client.musicPlayer.streamDispatchers.has(guildId)) {
                 this.client.musicPlayer.playList.add(guildId, track);
-                return message.channel.send(`Added \`${track.title}\` to the playlist.`);
+                const totalDuration: string = moment
+                    .duration(track.duration * 1000)
+                    .format('h:mm:ss')
+                    .padStart(4, '0:0');
+                const embed: RichEmbed = new RichEmbed();
+                embed.addField(`Added track to queue`, `**[${track.title}](${track.url})**`);
+                embed.addField('By', `${track.author}`, true);
+                embed.addField('Track Duration', totalDuration, true);
+                embed.setThumbnail(track.thumbnail);
+
+                return message.channel.send({ embed });
             }
 
             try {
