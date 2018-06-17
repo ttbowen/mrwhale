@@ -38,11 +38,23 @@ export default class extends Command<BotClient> {
             .format('h:mm:ss')
             .padStart(padMax, '0:0');
 
+        const progressLength = 20;
+        const percentage: number = Math.floor(
+            dispatcher.time / (currentTrack.duration * miliseconds) * progressLength
+        );
+        let progress = '';
+
+        for (let i = 0; i < progressLength; i++) {
+            if (i === percentage) progress += '🔘';
+            else progress += '▬';
+        }
+
         embed.setTitle(`Now playing ${currentTrack.title}`);
         embed.setAuthor(message.author.username, message.author.avatarURL);
         embed.setThumbnail(currentTrack.thumbnail);
         embed.addField('Duration', `${playingDuration}/${totalDuration}`, true);
         embed.addField('By', `${currentTrack.author}`, true);
+        embed.setDescription(`\`${progress}\``);
 
         return message.channel.send({ embed });
     }
