@@ -60,22 +60,22 @@ export class MusicManager {
 
     /**
      * Play the specified video.
-     * @param video The video url to play.
+     * @param track The track to play.
      * @param options The play options.
      */
-    play(video: Track, options: PlayOptions): void {
+    play(track: Track, options: PlayOptions): void {
         const channel: TextChannel = options.channel;
         const guildId: string = channel.guild.id;
         const streamOption = {
-            highWaterMark: 3145728,
+            highWaterMark: 1024 * 1024 * 2,
             quality: 'highestaudio'
         };
 
         const dispatcher: StreamDispatcher = options.voice.playStream(
-            ytdl(video.url, streamOption)
+            ytdl(track.url, streamOption)
         );
         dispatcher.setVolume(0.5);
-        this.playList.setCurrentTrack(guildId, video);
+        this.playList.setCurrentTrack(guildId, track);
 
         const dispatchHandler = () => {
             const playlist: Track[] = this.playList.get(guildId);
