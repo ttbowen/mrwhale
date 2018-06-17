@@ -1,6 +1,6 @@
 {
   "name": "mrwhale",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "This is a fun chatbot for discord.",
   "scripts": {
     "start": "npm run build && node ./dist/bot.js",
