@@ -52,6 +52,10 @@ export default class extends Command<BotClient> {
         const channel: VoiceChannel = message.member.voiceChannel;
         const guildId: string = message.guild.id;
         const memberId: string = message.member.id;
+
+        if (!this.client.musicPlayer.voiceManager.getGuildConnection(message.guild))
+            return message.channel.send('I am not connected to any voice channel.');
+
         const members: Collection<string, GuildMember> = this.getVoiceMembers(message.member.guild);
         const minSkip = members.size < 3 ? 1.0 : 0.5;
 
