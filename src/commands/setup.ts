@@ -1,4 +1,4 @@
-import { Collection, Role, TextChannel, User } from 'discord.js';
+import { Role, TextChannel } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 
 import { BotClient } from '../client/botClient';

@@ -1,6 +1,5 @@
 import { Collection, Guild, GuildMember } from 'discord.js';
 
-import { BotClient } from '../client/botClient';
 import { Track } from './track';
 
 /**

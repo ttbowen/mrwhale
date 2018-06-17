@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import * as request from 'request-promise';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 

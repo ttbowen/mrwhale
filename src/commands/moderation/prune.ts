@@ -1,4 +1,4 @@
-import { GuildMember, User } from 'discord.js';
+import { GuildMember } from 'discord.js';
 import { Command, CommandDecorators, Message, Middleware } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';

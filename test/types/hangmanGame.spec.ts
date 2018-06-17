@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { GuessResult } from '../../src/types/games/guessResult';
 import { HangmanGame } from '../../src/types/games/hangmanGame';
 

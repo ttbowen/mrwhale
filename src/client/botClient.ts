@@ -1,4 +1,4 @@
-import { GuildChannel, GuildMember, RichEmbed, TextChannel, User } from 'discord.js';
+import { GuildChannel, RichEmbed, TextChannel, User } from 'discord.js';
 import { Client, Guild, ListenerUtil, YAMDBFOptions } from 'yamdbf';
 
 import { Database } from '../database/database';
@@ -6,7 +6,6 @@ import { User as BotUser } from '../entity/user';
 import { LevelManager } from './managers/levelManager';
 import { ModerationManager } from './managers/moderationManager';
 import { MusicManager } from './managers/musicManager';
-import { VoiceManager } from './managers/voiceManager';
 
 const config = require('../../config.json');
 const { on, once } = ListenerUtil;

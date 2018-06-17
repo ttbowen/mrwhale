@@ -1,6 +1,5 @@
 import { Collection, GuildMember, VoiceChannel } from 'discord.js';
 import { Command, Guild, Message } from 'yamdbf';
-import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
 import { Track } from '../../music/track';

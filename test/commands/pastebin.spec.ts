@@ -1,9 +1,8 @@
 import * as chai from 'chai';
-import { TextChannel, User } from 'discord.js';
-import * as path from 'path';
+import { TextChannel } from 'discord.js';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { Lang, Message, StorageFactory } from 'yamdbf';
+import { Message, StorageFactory } from 'yamdbf';
 
 const mock = require('mock-require');
 mock('../../config.json');

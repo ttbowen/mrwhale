@@ -1,4 +1,4 @@
-import { Collection, StreamDispatcher, VoiceChannel, VoiceConnection } from 'discord.js';
+import { VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';

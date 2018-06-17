@@ -3,7 +3,6 @@ import { Client, RichEmbed, TextChannel, User } from 'discord.js';
 import * as path from 'path';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { createConnection, Connection } from 'typeorm';
 import { Guild, Message } from 'yamdbf';
 
 import * as command from '../../src/commands/useful/define';

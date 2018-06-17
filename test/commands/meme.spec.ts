@@ -3,7 +3,7 @@ import { TextChannel, User } from 'discord.js';
 import * as path from 'path';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { Message, StorageFactory, StorageProvider } from 'yamdbf';
+import { Message, StorageFactory } from 'yamdbf';
 
 const mock = require('mock-require');
 mock('../../config.json');

@@ -1,6 +1,5 @@
 import { VoiceChannel } from 'discord.js';
 import { Command, Message } from 'yamdbf';
-import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
 import { Track } from '../../music/track';

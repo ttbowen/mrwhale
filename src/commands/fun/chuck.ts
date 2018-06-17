@@ -3,7 +3,7 @@ import { Client, Command, Message } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';
 
-export default class extends Command {
+export default class extends Command<BotClient> {
     constructor() {
         super({
             name: 'chucknorris',

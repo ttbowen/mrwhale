@@ -1,5 +1,6 @@
 import { Collection } from 'discord.js';
 import { Command, Message } from 'yamdbf';
+
 import { BotClient } from '../../client/botClient';
 import * as hangmanPics from '../../data/hangmanPics';
 import { GuessResult } from '../../types/games/guessResult';

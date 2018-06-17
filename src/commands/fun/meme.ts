@@ -1,4 +1,3 @@
-import * as bluebird from 'bluebird';
 import * as request from 'request-promise';
 import { ClientStorage, Command, Message } from 'yamdbf';
 

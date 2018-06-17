@@ -6,7 +6,6 @@ import * as sinonChai from 'sinon-chai';
 import { Message } from 'yamdbf';
 
 import * as command from '../../src/commands/useful/gif';
-import { truncate } from '../../src/util/truncate';
 import { loadFixtures } from '../helpers/loadFixtures';
 
 const request = require('request-promise');

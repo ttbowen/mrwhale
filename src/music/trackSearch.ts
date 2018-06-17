@@ -1,6 +1,4 @@
-import { Collection } from 'discord.js';
 import { Message, Util } from 'yamdbf';
-import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../client/botClient';
 import { TrackCacheManager } from '../client/managers/trackCacheManager';

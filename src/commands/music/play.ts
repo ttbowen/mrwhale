@@ -4,10 +4,8 @@ import { Command, Message, Util } from 'yamdbf';
 import * as ytdl from 'ytdl-core';
 
 import { BotClient } from '../../client/botClient';
-import { YouTube } from '../../music/YouTube';
 import { Track } from '../../music/track';
 import { TrackBuilder } from '../../music/trackBuilder';
-import { TrackSearch } from '../../music/trackSearch';
 import { PlayOptions } from '../../types/music/playOptions';
 import { Search } from '../../types/music/search';
 

@@ -7,8 +7,7 @@ import {
     Logger,
     Message,
     Middleware,
-    ResourceLoader,
-    Util
+    ResourceLoader
 } from 'yamdbf';
 
 import { BotClient } from '../../client/botClient';

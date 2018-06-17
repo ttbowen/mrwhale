@@ -1,5 +1,4 @@
 import { Collection, StreamDispatcher, VoiceChannel, VoiceConnection } from 'discord.js';
-import * as ytdl from 'ytdl-core';
 
 import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
