@@ -186,7 +186,7 @@ export class MusicManager {
 
         if (!guild) return false;
         if (!await moderation.hasSetModRole(guild) && !await this.hasSetMusicRole(guild))
-            return false;
+            return true;
 
         if (!await moderation.hasModRole(member) && !await this.hasMusicRole(member)) return false;
 
@@ -198,6 +198,7 @@ export class MusicManager {
      * @param message The message received from command call.
      */
     async error(message: Message): Promise<Message | Message[]> {
+        let allowedRoles: Role[] = [];
         const settings: GuildSettings = await message.guild.storage.settings;
         const guild: Guild = await message.guild;
         const member: GuildMember = await message.member;
@@ -205,21 +206,20 @@ export class MusicManager {
         const roles: Collection<string, Role> = message.guild.roles;
         const prefix: string = await this.client.getPrefix(message.guild);
 
-        const musicName: string = (await this.hasSetMusicRole(guild))
-            ? `${roles.get(await settings.get('musicrole')).name}`
-            : 'music';
-        const modName: string = (await moderation.hasSetModRole(guild))
-            ? `${roles.get(await settings.get('modrole')).name}`
-            : 'mod';
+        if (roles.get(await settings.get('musicrole')))
+            allowedRoles.push(roles.get(await settings.get('musicrole')));
+
+        if (roles.get(await settings.get('modrole')))
+            allowedRoles.push(roles.get(await settings.get('modrole')));
+
+        allowedRoles = allowedRoles.filter((v, i, a) => a.indexOf(v) === i);
 
         if (!message.guild) return await message.channel.send('Command cannot be called from DM.');
 
-        if (!await this.hasSetMusicRole(guild) && !await moderation.hasSetModRole(guild))
-            return message.channel.send(`This guild has no music or mod role set.`);
-
+        const allowedRoleNames: string[] = allowedRoles.map(r => `\`${r.name}\``);
         if (!await this.hasMusicRole(member) && !await moderation.hasModRole(member))
             return message.channel.send(
-                `You need the roles \`${musicName}\` or \`${modName}\` to use this command.`
+                `You are missing one of the following roles: ${allowedRoleNames.join(',')}`
             );
     }
 
