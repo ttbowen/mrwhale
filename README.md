@@ -1,10 +1,10 @@
-# Mr. Whale [![Build Status](https://travis-ci.org/bowenwaregames/mrwhale.svg?branch=master)](https://travis-ci.org/bowenwaregames/mrwhale) [![dependencies Status](https://david-dm.org/bowenwaregames/mrwhale/status.svg)](https://david-dm.org/bowenwaregames/mrwhale) [![devDependencies Status](https://david-dm.org/bowenwaregames/mrwhale/dev-status.svg)](https://david-dm.org/bowenwaregames/mrwhale?type=dev) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/mrwhalediscord)
+# Mr. Whale ![Build Status](https://travis-ci.org/bowenwaregames/mrwhale.svg?branch=master)
 
 Mr. Whale is a fun general purpose [Discord](https://discordapp.com/) bot. Feel free to join the discord server for more information.
 
 Pull requests are also welcome. If you find any issues please open a new issue [here](https://github.com/bowenwaregames/mrwhale/issues).
 
-[![Join Mr. Whale](https://discordapp.com/api/guilds/407167968481640449/embed.png?style=banner2)](https://discord.gg/ae3mfBV)
+[![Join Mr. Whale](https://discordapp.com/api/guilds/594664183182655488/embed.png?style=banner2)](https://discord.gg/ZfPgAf)
 
 ## Features
 
