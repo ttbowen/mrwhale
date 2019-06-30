@@ -13,27 +13,27 @@ const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('invite', () => {
-    let cmd: command.default;
-    let sandbox: sinon.SinonSandbox;
+  let cmd: command.default;
+  let sandbox: sinon.SinonSandbox;
 
-    before(() => {
-        cmd = new command.default();
-        sandbox = sinon.createSandbox();
-    });
+  before(() => {
+    cmd = new command.default();
+    sandbox = sinon.createSandbox();
+  });
 
-    after(() => sandbox.restore());
+  after(() => sandbox.restore());
 
-    it('should respond with an invite link', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
-        clientStub.user = sinon.createStubInstance(ClientUser);
-        clientStub.user.id = '414497162261430272';
-        cmd.client = clientStub;
+  it('should respond with an invite link', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
+    clientStub.user = sinon.createStubInstance(ClientUser);
+    clientStub.user.id = '414497162261430272';
+    cmd.client = clientStub;
 
-        cmd.action(message);
+    cmd.action(message);
 
-        expect(message.channel.send).calledWith(`
+    expect(message.channel.send).calledWith(`
         You can invite me to your server with this link:\n <https://discordapp.com/oauth2/authorize?client_id=${
-            clientStub.user.id
+          clientStub.user.id
         }&scope=bot&permissions=2146958591>`);
-    });
+  });
 });

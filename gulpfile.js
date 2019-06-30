@@ -9,25 +9,25 @@ const project = ts.createProject('tsconfig.json');
 gulp.task('default', ['build']);
 
 gulp.task('build', function() {
-    del.sync(['dist/**/*.*']);
+  del.sync(['dist/**/*.*']);
 
-    const compile = gulp
-        .src('src/**/*.ts')
-        .pipe(sourcemaps.init({ base: 'src' }))
-        .pipe(project());
+  const compile = gulp
+    .src('src/**/*.ts')
+    .pipe(sourcemaps.init({ base: 'src' }))
+    .pipe(project());
 
-    compile.pipe(gulp.dest('dist'));
+  compile.pipe(gulp.dest('dist'));
 
-    gulp.src('src/**/*.js').pipe(gulp.dest('dist'));
-    gulp.src('src/**/*.json').pipe(gulp.dest('dist'));
-    gulp.src('src/**/*.lang').pipe(gulp.dest('dist'));
+  gulp.src('src/**/*.js').pipe(gulp.dest('dist'));
+  gulp.src('src/**/*.json').pipe(gulp.dest('dist'));
+  gulp.src('src/**/*.lang').pipe(gulp.dest('dist'));
 
-    return compile.js
-        .pipe(sourcemaps.mapSources(src => path.join(__dirname, 'src', src)))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist'));
+  return compile.js
+    .pipe(sourcemaps.mapSources(src => path.join(__dirname, 'src', src)))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('watch', ['build'], () => {
-    gulp.watch('src/**/*.{ts,js}', ['build']);
+  gulp.watch('src/**/*.{ts,js}', ['build']);
 });

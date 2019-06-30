@@ -10,17 +10,17 @@ import { BotClient } from '../../client/botClient';
  * @param descriptor
  */
 export function restrictedMusicCommand(
-    target: Command<BotClient>,
-    key: string,
-    descriptor: PropertyDescriptor
+  target: Command<BotClient>,
+  key: string,
+  descriptor: PropertyDescriptor
 ): PropertyDescriptor {
-    const original = descriptor.value;
-    descriptor.value = async function(message: Message, args: any[]): Promise<void> {
-        const canCall = await (this as Command<BotClient>).client.musicPlayer.canCallMusicCommand(
-            message
-        );
-        if (!canCall) (this as Command<BotClient>).client.musicPlayer.error(message);
-        else return await original.apply(this, [message, args]);
-    };
-    return descriptor;
+  const original = descriptor.value;
+  descriptor.value = async function(message: Message, args: any[]): Promise<void> {
+    const canCall = await (this as Command<BotClient>).client.musicPlayer.canCallMusicCommand(
+      message
+    );
+    if (!canCall) (this as Command<BotClient>).client.musicPlayer.error(message);
+    else return await original.apply(this, [message, args]);
+  };
+  return descriptor;
 }

@@ -14,40 +14,40 @@ const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('choose', () => {
-    let cmd: command.default;
-    let sandbox: sinon.SinonSandbox;
+  let cmd: command.default;
+  let sandbox: sinon.SinonSandbox;
 
-    before(() => {
-        cmd = new command.default();
-        sandbox = sinon.createSandbox();
-        sandbox.stub(Math, 'random').callsFake(() => 0.09121145093071314);
-    });
+  before(() => {
+    cmd = new command.default();
+    sandbox = sinon.createSandbox();
+    sandbox.stub(Math, 'random').callsFake(() => 0.09121145093071314);
+  });
 
-    after(() => sandbox.restore());
+  after(() => sandbox.restore());
 
-    it('should ask the user to pass in options when no options are passed', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should ask the user to pass in options when no options are passed', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, null);
+    cmd.action(message, null);
 
-        expect(message.channel.send).calledWith(`No choices have been passed.`);
-    });
+    expect(message.channel.send).calledWith(`No choices have been passed.`);
+  });
 
-    it('should ask the user to pass more options when less than 2 options are passed', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should ask the user to pass more options when less than 2 options are passed', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, ['whale']);
+    cmd.action(message, ['whale']);
 
-        expect(message.channel.send).calledWith(`Please pass two or more choices.`);
-    });
+    expect(message.channel.send).calledWith(`Please pass two or more choices.`);
+  });
 
-    it('should choose one of the options', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should choose one of the options', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, ['whale', 'dolphin']);
+    cmd.action(message, ['whale', 'dolphin']);
 
-        expect(message.channel.send).calledWith(
-            `${responses.default[1].replace(/<<CHOICE>>/g, 'whale')}`
-        );
-    });
+    expect(message.channel.send).calledWith(
+      `${responses.default[1].replace(/<<CHOICE>>/g, 'whale')}`
+    );
+  });
 });

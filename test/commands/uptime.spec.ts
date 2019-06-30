@@ -13,24 +13,24 @@ const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('uptime', () => {
-    let cmd: command.default;
-    let sandbox: sinon.SinonSandbox;
+  let cmd: command.default;
+  let sandbox: sinon.SinonSandbox;
 
-    before(() => {
-        cmd = new command.default();
-        sandbox = sinon.createSandbox();
-        clientStub.readyAt = new Date();
-        cmd.client = clientStub;
-    });
+  before(() => {
+    cmd = new command.default();
+    sandbox = sinon.createSandbox();
+    clientStub.readyAt = new Date();
+    cmd.client = clientStub;
+  });
 
-    after(() => sandbox.restore());
+  after(() => sandbox.restore());
 
-    it('should respond with bot uptime', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
-        const uptime: string = Time.difference(clientStub.uptime * 2, clientStub.uptime).toString();
+  it('should respond with bot uptime', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
+    const uptime: string = Time.difference(clientStub.uptime * 2, clientStub.uptime).toString();
 
-        cmd.action(message);
+    cmd.action(message);
 
-        expect(message.channel.send).calledWith(`I have been up ${uptime}`);
-    });
+    expect(message.channel.send).calledWith(`I have been up ${uptime}`);
+  });
 });

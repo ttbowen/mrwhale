@@ -13,38 +13,38 @@ const clientStub = sinon.createStubInstance(Client);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('roll', () => {
-    let cmd: command.default;
-    let sandbox: sinon.SinonSandbox;
+  let cmd: command.default;
+  let sandbox: sinon.SinonSandbox;
 
-    before(() => {
-        cmd = new command.default();
-        sandbox = sinon.createSandbox();
-        sandbox.stub(Math, 'random').callsFake(() => 0.09121145093071314);
-    });
+  before(() => {
+    cmd = new command.default();
+    sandbox = sinon.createSandbox();
+    sandbox.stub(Math, 'random').callsFake(() => 0.09121145093071314);
+  });
 
-    after(() => sandbox.restore());
+  after(() => sandbox.restore());
 
-    it('should roll random dice value', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should roll random dice value', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, []);
+    cmd.action(message, []);
 
-        expect(message.channel.send).calledWith(`You rolled a 1`);
-    });
+    expect(message.channel.send).calledWith(`You rolled a 1`);
+  });
 
-    it('should roll random dice value within range of passed number', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should roll random dice value within range of passed number', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, ['50']);
+    cmd.action(message, ['50']);
 
-        expect(message.channel.send).calledWith(`You rolled a 5`);
-    });
+    expect(message.channel.send).calledWith(`You rolled a 5`);
+  });
 
-    it('should roll the correct number of dice', () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should roll the correct number of dice', () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        cmd.action(message, ['5 d10']);
+    cmd.action(message, ['5 d10']);
 
-        expect(message.channel.send).calledWith(`You rolled a 1,1,1,1,1`);
-    });
+    expect(message.channel.send).calledWith(`You rolled a 1,1,1,1,1`);
+  });
 });

@@ -4,32 +4,32 @@ import { Command, Message } from 'yamdbf';
 import { BotClient } from '../../client/botClient';
 
 export default class extends Command<BotClient> {
-    constructor() {
-        super({
-            name: 'version',
-            desc: 'Get the current bot version.',
-            usage: '<prefix>version',
-            group: 'info'
-        });
-    }
+  constructor() {
+    super({
+      name: 'version',
+      desc: 'Get the current bot version.',
+      usage: '<prefix>version',
+      group: 'info'
+    });
+  }
 
-    async action(message: Message): Promise<any> {
-        const version = require('../../../package.json').version || '0.0.0';
-        const git = require('child_process').spawn('git', ['log', '-n', '1']);
+  async action(message: Message): Promise<any> {
+    const version = require('../../../package.json').version || '0.0.0';
+    const git = require('child_process').spawn('git', ['log', '-n', '1']);
 
-        const embed = new RichEmbed().setTitle('Version information').addField('Version', version);
+    const embed = new RichEmbed().setTitle('Version information').addField('Version', version);
 
-        git.stdout.on('data', data => {
-            if (data) {
-                const commit = data.toString();
-                embed.addField('Commit', commit);
+    git.stdout.on('data', data => {
+      if (data) {
+        const commit = data.toString();
+        embed.addField('Commit', commit);
 
-                return message.channel.send({ embed });
-            }
-        });
+        return message.channel.send({ embed });
+      }
+    });
 
-        git.on('close', code => {
-            if (code !== 0) return message.channel.send({ embed });
-        });
-    }
+    git.on('close', code => {
+      if (code !== 0) return message.channel.send({ embed });
+    });
+  }
 }

@@ -19,66 +19,66 @@ const clientStub = sinon.createStubInstance(BotClient);
 const textChannelStub = sinon.createStubInstance(TextChannel);
 
 describe('pastebin', () => {
-    let cmd: command.default;
-    let sandbox: sinon.SinonSandbox;
-    let requestStub: sinon.SinonStub;
+  let cmd: command.default;
+  let sandbox: sinon.SinonSandbox;
+  let requestStub: sinon.SinonStub;
 
-    before(() => {
-        cmd = new command.default();
-        sandbox = sinon.createSandbox();
-        requestStub = sandbox.stub(request, 'Request');
+  before(() => {
+    cmd = new command.default();
+    sandbox = sinon.createSandbox();
+    requestStub = sandbox.stub(request, 'Request');
 
-        clientStub.provider = TestProviders.TestStorageProvider();
-        const storageFactory: StorageFactory = new StorageFactory(
-            clientStub,
-            new clientStub.provider('guild_storage'),
-            new clientStub.provider('guild_settings')
-        );
-        clientStub.storage = storageFactory.createClientStorage();
-        clientStub.storage.set('pastebin', 'abcdefghijklmnopqrstuvwxyz123456789');
+    clientStub.provider = TestProviders.TestStorageProvider();
+    const storageFactory: StorageFactory = new StorageFactory(
+      clientStub,
+      new clientStub.provider('guild_storage'),
+      new clientStub.provider('guild_settings')
+    );
+    clientStub.storage = storageFactory.createClientStorage();
+    clientStub.storage.set('pastebin', 'abcdefghijklmnopqrstuvwxyz123456789');
 
-        cmd.client = clientStub;
-    });
+    cmd.client = clientStub;
+  });
 
-    after(() => sandbox.restore());
+  after(() => sandbox.restore());
 
-    it('should respond with a pastebin url', async () => {
-        const paste = 'This is a paste';
-        const expected = 'https://pastebin.com/DcmTX479';
-        const message: Message = new Message(textChannelStub, null, clientStub);
-        requestStub.resolves(expected);
+  it('should respond with a pastebin url', async () => {
+    const paste = 'This is a paste';
+    const expected = 'https://pastebin.com/DcmTX479';
+    const message: Message = new Message(textChannelStub, null, clientStub);
+    requestStub.resolves(expected);
 
-        await cmd.action(message, [paste]);
+    await cmd.action(message, [paste]);
 
-        expect(message.channel.send).calledWith(expected);
-    });
+    expect(message.channel.send).calledWith(expected);
+  });
 
-    it('should call the api with the correct options', async () => {
-        const paste = 'This is a paste';
-        const expected = 'https://pastebin.com/DcmTX479';
-        const message: Message = new Message(textChannelStub, null, clientStub);
-        const options = {
-            callback: undefined,
-            url: `https://pastebin.com/api/api_post.php`,
-            method: 'POST',
-            form: {
-                api_option: 'paste',
-                api_paste_code: paste,
-                api_dev_key: await cmd.client.storage.get('pastebin')
-            }
-        };
-        requestStub.resolves(expected);
+  it('should call the api with the correct options', async () => {
+    const paste = 'This is a paste';
+    const expected = 'https://pastebin.com/DcmTX479';
+    const message: Message = new Message(textChannelStub, null, clientStub);
+    const options = {
+      callback: undefined,
+      url: `https://pastebin.com/api/api_post.php`,
+      method: 'POST',
+      form: {
+        api_option: 'paste',
+        api_paste_code: paste,
+        api_dev_key: await cmd.client.storage.get('pastebin')
+      }
+    };
+    requestStub.resolves(expected);
 
-        await cmd.action(message, [paste]);
+    await cmd.action(message, [paste]);
 
-        expect(requestStub).calledWith(options);
-    });
+    expect(requestStub).calledWith(options);
+  });
 
-    it('should ask the user to provide a paste is none is passed', async () => {
-        const message: Message = new Message(textChannelStub, null, clientStub);
+  it('should ask the user to provide a paste is none is passed', async () => {
+    const message: Message = new Message(textChannelStub, null, clientStub);
 
-        await cmd.action(message, ['']);
+    await cmd.action(message, ['']);
 
-        expect(message.channel.send).calledWith('Please provide a paste to upload.');
-    });
+    expect(message.channel.send).calledWith('Please provide a paste to upload.');
+  });
 });
