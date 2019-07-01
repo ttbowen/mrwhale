@@ -67,7 +67,7 @@ export class MusicManager {
     const channel: TextChannel = options.channel;
     const guildId: string = channel.guild.id;
     const streamOption = {
-      highWaterMark: 1024 * 1024 * 2,
+      highWaterMark: 1 << 25,
       quality: 'highestaudio'
     };
 
