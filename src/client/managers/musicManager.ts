@@ -144,7 +144,7 @@ export class MusicManager {
   async getVideoInfo(video: string): Promise<ytdl.videoInfo> {
     let videoInfo: ytdl.videoInfo;
 
-    if (ytdl.validateLink(video)) videoInfo = await ytdl.getInfo(video);
+    if (ytdl.validateID(video)) videoInfo = await ytdl.getInfo(video);
 
     return videoInfo;
   }
