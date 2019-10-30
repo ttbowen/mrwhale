@@ -71,7 +71,7 @@
     "reflect-metadata": "^0.1.10",
     "request-promise": "^4.2.2",
     "seedrandom": "^2.4.4",
-    "sequelize": "^4.37.5",
+    "sequelize": "^5.15.1",
     "sql.js": "^0.5.0",
     "sqlite3": "^4.1.0",
     "typeorm": "0.2.6",
